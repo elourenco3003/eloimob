@@ -226,6 +226,9 @@ h1,h2,h3{font-family:var(--fonte-d);letter-spacing:-.02em;margin:0;}
 
 /* linha de ações do imóvel */
 .acoes-linha{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+/* Duas acoes lado a lado, metade cada. Sem quebrar linha no celular. */
+.acoes-par{display:flex;gap:8px;margin-top:10px;}
+.acoes-par>*{flex:1 1 0;min-width:0;text-align:center;}
 .acao-min{background:var(--sd-surface2);border:1px solid var(--sd-border);border-radius:var(--r-pill);
   padding:8px 13px;font:600 .84rem var(--fonte);color:var(--sd-muted);cursor:pointer;
   text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
@@ -260,33 +263,105 @@ h1,h2,h3{font-family:var(--fonte-d);letter-spacing:-.02em;margin:0;}
 .autenticidade{border-color:var(--sd-success);background:var(--sd-success-soft);}
 .autenticidade .meta{color:var(--sd-text);opacity:.8;line-height:1.45;}
 .autenticidade .codigo{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:1.28rem;font-weight:700;letter-spacing:.08em;color:var(--sd-success);
-  margin:12px 0 4px;text-align:center;}
-.selo-ok{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--sd-success);
+  font-size:1.12rem;font-weight:700;letter-spacing:.06em;color:var(--sd-success);
+  margin:10px 0 2px;text-align:center;}
+.selo-ok{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--sd-success);
   color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:700;}
 .acao-min.destaque-acao{background:var(--sd-primary);border-color:var(--sd-primary);color:#fff;}
 
+/* ---------------------------------------------------------------------
+   MODO ADMINISTRADOR
+   Entrando como admin da plataforma, você enxerga contas de terceiros.
+   O aviso é permanente e fica no topo, onde não dá para ignorar. Usa o
+   ciano dos tokens: distingue do azul da marca sem parecer erro (vermelho)
+   nem confirmação (verde).
+   --------------------------------------------------------------------- */
+html[data-modo="admin"] .appbar{
+  background:linear-gradient(var(--sd-cyan-soft),var(--sd-surface));
+  border-bottom-color:var(--sd-cyan);
+  box-shadow:inset 0 3px 0 var(--sd-cyan);
+}
+html[data-modo="admin"] .drawer-head{
+  background:var(--sd-cyan-soft);
+  border-bottom:1px solid var(--sd-cyan);
+}
+.selo-admin{display:inline-block;background:var(--sd-cyan);color:#fff;
+  border-radius:var(--r-pill);font-size:.62rem;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;margin-top:5px;}
+html[data-modo="admin"] .db{background:var(--sd-cyan-soft);color:var(--sd-cyan);
+  border-color:var(--sd-cyan);}
+
+/* Aviso de fila pendente. Fica na barra do topo porque o corretor
+   precisa saber ANTES de sair do imóvel que ainda falta subir coisa. */
+/* O relatório sai da tela mas continua no PDF: o documento impresso
+   precisa ser completo, a tela precisa ser decidível. */
+.so-impressao{display:none;}
+
+/* Atalho do cômodo. Discreto de propósito: é acelerador, não a ação
+   principal — a principal continua sendo olhar item a item. */
+.tudo-bom{display:block;width:100%;background:var(--sd-surface2);
+  border:1px dashed var(--sd-border-strong);color:var(--sd-muted);
+  border-radius:var(--r-sm);padding:10px;font-size:.82rem;font-weight:600;
+  cursor:pointer;font-family:inherit;margin-bottom:10px;}
+.tudo-bom:hover{border-color:var(--sd-success);color:var(--sd-success);}
+.tudo-bom.feito{border-style:solid;border-color:var(--sd-success);
+  background:var(--sd-success-soft);color:var(--sd-success);}
+
+.selo-fila{display:none;}
+.selo-fila.visivel{display:inline-block;border-radius:var(--r-pill);
+  font-size:.68rem;font-weight:700;padding:4px 9px;white-space:nowrap;}
+.selo-fila.offline{background:var(--sd-warning-soft);color:var(--sd-warning);}
+.selo-fila.enviando{background:var(--sd-primary-soft);color:var(--sd-primary);}
+
+.cartao-plano{display:block;width:100%;text-align:left;background:var(--sd-surface);
+  border:2px solid var(--sd-border);border-radius:var(--r-lg);padding:14px 15px;
+  margin-bottom:9px;font:inherit;color:inherit;cursor:pointer;transition:border-color .15s;}
+.cartao-plano:hover{border-color:var(--sd-border-strong);}
+.cartao-plano.escolhido{border-color:var(--sd-primary);background:var(--sd-primary-soft);}
+.chip-esc{background:var(--sd-surface);border:1px solid var(--sd-border-strong);
+  color:var(--sd-muted);border-radius:var(--r-pill);padding:9px 15px;font-size:.87rem;
+  font-weight:600;cursor:pointer;font-family:inherit;}
+.chip-esc.on{background:var(--sd-primary);border-color:var(--sd-primary);color:var(--sd-on-primary);}
+
+.tab-legal{width:100%;border-collapse:collapse;margin:10px 0;font-size:.82rem;}
+.tab-legal td{border:1px solid var(--sd-border);padding:7px 9px;vertical-align:top;}
+.tab-legal tr:first-child td{background:var(--sd-surface2);font-weight:700;}
+
 /* ---------- seções do relatório da ficha ---------- */
 .rel-sec{background:var(--sd-surface);border:1px solid var(--sd-border);
-  border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;}
-.rel-sec > summary{padding:13px 15px;font-size:.92rem;font-weight:600;cursor:pointer;
-  list-style:none;display:flex;align-items:center;gap:9px;}
+  border-radius:var(--r-lg);margin-bottom:8px;overflow:hidden;}
+.rel-sec > summary{padding:13px 15px;font-size:.9rem;font-weight:600;cursor:pointer;
+  list-style:none;display:flex;align-items:baseline;gap:8px;}
 .rel-sec > summary::-webkit-details-marker{display:none;}
 .rel-sec > summary::after{content:"▾";margin-left:auto;color:var(--sd-faint);
   font-size:.85rem;transition:transform .18s;}
 .rel-sec[open] > summary::after{transform:rotate(180deg);}
-.rel-sec > summary .conta{font-size:.75rem;color:var(--sd-faint);font-weight:600;
-  font-variant-numeric:tabular-nums;}
+/* Contador discreto ao lado do título, sem empurrar para a segunda linha. */
+.rel-sec > summary .conta{font-size:.72rem;color:var(--sd-faint);font-weight:600;
+  font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;}
+.rel-sec > summary .tit{flex:1 1 auto;min-width:0;}
 .rel-corpo{padding:0 15px 13px;}
-.par{display:flex;justify-content:space-between;gap:14px;padding:8px 0;
-  border-bottom:1px solid var(--sd-border);font-size:.85rem;}
+/* Rótulo discreto à esquerda, valor à direita em peso médio. Tudo em
+   negrito do mesmo tamanho vira ruído: o olho não sabe onde pousar. */
+.par{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:7px 0;border-bottom:1px solid var(--sd-border);font-size:.84rem;}
 .par:last-child{border-bottom:none;}
-.par .k{color:var(--sd-muted);flex:0 0 auto;}
-.par .v{font-weight:600;text-align:right;word-break:break-word;}
-.item-lista{padding:11px 0;border-bottom:1px solid var(--sd-border);}
+.par .k{color:var(--sd-muted);flex:0 0 auto;font-weight:400;}
+.par .v{font-weight:500;text-align:right;color:var(--sd-text);
+  font-variant-numeric:tabular-nums;}
+/* Valor longo empilha: nome completo alinhado à direita fica ilegível. */
+.par.longo{display:block;}
+.par.longo .k{display:block;font-size:.76rem;margin-bottom:2px;}
+.par.longo .v{display:block;text-align:left;font-weight:600;}
+.item-lista{padding:10px 0;border-bottom:1px solid var(--sd-border);}
 .item-lista:last-child{border-bottom:none;}
-.item-lista .tit{font-size:.88rem;font-weight:600;line-height:1.3;overflow-wrap:anywhere;}
-.item-lista .sub{font-size:.78rem;color:var(--sd-muted);margin-top:3px;line-height:1.45;}
+.item-lista .tit{font-size:.85rem;font-weight:600;line-height:1.35;overflow-wrap:anywhere;}
+.item-lista .sub{font-size:.77rem;color:var(--sd-muted);margin-top:2px;line-height:1.45;}
+.item-lista .cifra{float:right;font-weight:600;font-variant-numeric:tabular-nums;
+  margin-left:12px;}
+/* Rótulo de bloco dentro de uma seção, para separar listas do resumo. */
+.sub-titulo{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--sd-faint);margin:14px 0 2px;}
 .vazio-sec{font-size:.83rem;color:var(--sd-faint);padding:6px 0;}
 
 /* ---------- parecer da ficha ---------- */
@@ -352,6 +427,10 @@ h1,h2,h3{font-family:var(--fonte-d);letter-spacing:-.02em;margin:0;}
 .doc-clausula h3{font-family:var(--fonte);font-size:.86rem;font-weight:700;
   text-transform:uppercase;letter-spacing:.03em;color:var(--sd-primary);margin-bottom:5px;}
 .doc-clausula p{font-size:.92rem;line-height:1.65;margin:0;text-align:justify;max-width:74ch;}
+@page{ size: A4 portrait; margin: 14mm 12mm; }
+
+@media print{ .so-impressao{display:block;} }
+
 @media print{
   .doc{border:none;box-shadow:none;padding:0;}
   .doc-clausula{break-inside:avoid;}
@@ -808,6 +887,82 @@ const api = {
   marcarVencidas: async () => ok(await sb.rpc("marcar_vencidas")),
 
   /* ---------- fichas de análise de crédito ---------- */
+  errosRecentes: async (dias = 7) => ok(await sb.rpc("admin_erros", { p_dias: dias })),
+
+  /* ---------- equipe ---------- */
+  equipe:      async () => ok(await sb.rpc("listar_equipe")),
+  convites:    async () => ok(await sb.rpc("listar_convites")),
+  vagas:       async () => ok(await sb.rpc("vagas_da_conta", { p_conta: app.conta.conta_id })),
+  convidar:    async (papel, nome, email, telefone) => ok(await sb.rpc("convidar_membro",
+                 { p_papel: papel, p_nome: nome, p_email: email || null, p_telefone: telefone || null })),
+  cancelarConvite: async (id) => ok(await sb.rpc("cancelar_convite", { p_id: id })),
+  alterarMembro:   async (usuario, papel, ativo) => ok(await sb.rpc("alterar_membro",
+                     { p_usuario: usuario, p_papel: papel ?? null, p_ativo: ativo ?? null })),
+  abrirConvite:    async (token) => ok(await sb.rpc("abrir_convite", { p_token: token })),
+  aceitarConvite:  async (token) => ok(await sb.rpc("aceitar_convite", { p_token: token })),
+
+  excluirImovel: async (id) => ok(await sb.rpc("excluir_imovel", { p_imovel: id })),
+  excluirFicha:  async (id) => ok(await sb.rpc("excluir_ficha",  { p_ficha: id })),
+
+  planosPublicos: async (publico) => ok(await sb.rpc("planos_publicos",
+    { p_publico: publico ?? null })),
+
+  meusModulos: async () => ok(await sb.rpc("meus_modulos")),
+  pendentesLegais: async () => ok(await sb.rpc("documentos_pendentes")),
+  documento: async (id) => {
+    const { data, error } = await sb.from("documentos_legais")
+      .select("conteudo,tipo,versao").eq("id", id).single();
+    if (error) throw new Error(error.message);
+    return data;
+  },
+  aceitar: async (id) => ok(await sb.rpc("registrar_aceite",
+    { p_documento: id, p_user_agent: navigator.userAgent.slice(0, 300) })),
+  exportar:    async () => ok(await sb.rpc("exportar_conta")),
+  assinar: async (gestao, analise, forma) => {
+    const { data, error } = await sb.functions.invoke("asaas-assinar",
+      { body: { plano_gestao: gestao, plano_analise: analise, forma } });
+    if (error) throw new Error(error.message);
+    if (data?.erro) throw new Error(data.erro);
+    return data;
+  },
+  usoFichas:   async () => ok(await sb.rpc("uso_fichas")),
+  precoPacote: async (gestao, analise) => ok(await sb.rpc("calcular_preco",
+                 { p_gestao: gestao, p_analise: analise ?? null })),
+
+  /* ---------- valores comerciais (admin) ---------- */
+  planosComerciais: async () => ok(await sb.from("planos")
+    .select("*").not("modulo_id", "is", null).order("ordem")),
+  configComercial: async () => {
+    const { data, error } = await sb.from("config_comercial").select("*").single();
+    if (error) throw new Error(error.message);
+    return data;
+  },
+  salvarValores: async (planos, desconto) => {
+    for (const p of planos) {
+      const { id, ...campos } = p;
+      const { error } = await sb.from("planos").update(campos).eq("id", id);
+      if (error) throw new Error(error.message);
+    }
+    const { error } = await sb.from("config_comercial")
+      .update({ desconto_pacote_pct: desconto, atualizada_em: new Date().toISOString() })
+      .eq("id", true);
+    if (error) throw new Error(error.message);
+  },
+
+  /* ---------- dados fiscais ---------- */
+  faturamento: async () => {
+    const { data, error } = await sb.from("dados_faturamento")
+      .select("*").eq("conta_id", app.conta.conta_id).maybeSingle();
+    if (error) throw new Error(error.message);
+    return data;
+  },
+  salvarFaturamento: async (d) => ok(await sb.from("dados_faturamento")
+    .upsert({ ...d, conta_id: app.conta.conta_id, atualizado_em: new Date().toISOString() })
+    .select().single()),
+  faturas: async () => ok(await sb.from("faturas")
+    .select("id,descricao,valor,vencimento,status,pago_em,link_boleto,nota_fiscal_url")
+    .order("vencimento", { ascending: false })),
+
   listarFichas: async () => ok(await sb.from("fichas")
     .select("id,nome,cpf_cnpj,status,aluguel_pretendido,tipo_garantia,parecer,criada_em,token_publico")
     .order("criada_em", { ascending: false })),
@@ -868,14 +1023,18 @@ async function buscarCep(cep) {
     const r = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
     const d = await r.json();
     if (!d.erro) {
-      return { logradouro: d.logradouro, bairro: d.bairro, cidade: d.localidade, uf: d.uf };
+      // O ibge vem de graça no ViaCEP e é exatamente o campo que a
+      // prefeitura exige na NFS-e. Só não estava sendo aproveitado.
+      return { logradouro: d.logradouro, bairro: d.bairro, cidade: d.localidade,
+               uf: d.uf, ibge: d.ibge || null };
     }
   } catch (e) { /* cai para a alternativa */ }
 
   const r2 = await fetch(`https://brasilapi.com.br/api/cep/v1/${limpo}`);
   if (!r2.ok) throw new Error("CEP não encontrado");
   const d2 = await r2.json();
-  return { logradouro: d2.street, bairro: d2.neighborhood, cidade: d2.city, uf: d2.state };
+  return { logradouro: d2.street, bairro: d2.neighborhood, cidade: d2.city,
+           uf: d2.state, ibge: d2.city_ibge || null };
 }
 
 // Caminho inverso: com UF, cidade e rua, o ViaCEP devolve o CEP.
@@ -974,6 +1133,7 @@ function moldura(conteudo, barra = "") {
       <h1>IMOB</h1>
       <div class="sub">${esc(c.nome)}</div>
     </div>
+    <span class="selo-fila" id="seloFila"></span>
     <div class="db">${c.tipo === "imobiliaria" ? "Equipe" : "Autônomo"}</div>
   </header>
 
@@ -982,7 +1142,11 @@ function moldura(conteudo, barra = "") {
     <div class="drawer-head">
       <img src="logoelo.png" alt="Elo" class="logo logo-drawer" onerror="this.remove()">
       <h2>IMOB</h2>
-      <div class="meta">${esc(c.nome)} · ${esc(c.papel)}</div>
+      <div class="meta">${esc(c.nome)}</div>
+      ${app.admin
+        ? `<div class="selo-admin">Modo administrador</div>`
+        : `<div class="meta" style="margin-top:2px;font-weight:600">${
+            ROT_MEMBRO[c.papel] || esc(c.papel)}</div>`}
     </div>
     <nav class="drawer-nav">
       <button class="dnav ${app.aba === "inicio" && !app.tela ? "active" : ""}" onclick="eloIr('inicio')">Início</button>
@@ -992,9 +1156,15 @@ function moldura(conteudo, barra = "") {
         onclick="eloIr('contratos')">Contratos</button>
       <button class="dnav ${app.aba === "fichas" && !app.tela ? "active" : ""}"
         onclick="eloIr('fichas')">Fichas</button>
+      <button class="dnav ${app.aba === "equipe" && !app.tela ? "active" : ""}"
+        onclick="eloIr('equipe')">Equipe</button>
+      <button class="dnav ${app.aba === "assinatura" && !app.tela ? "active" : ""}"
+        onclick="eloIr('assinatura')">Assinatura</button>
+      <button class="dnav ${app.aba === "faturamento" && !app.tela ? "active" : ""}"
+        onclick="eloIr('faturamento')">Faturamento</button>
       ${app.admin ? `<button class="dnav ${app.aba === "admin" && !app.tela ? "active" : ""}"
         onclick="eloIr('admin')" style="margin-top:8px;border-top:1px solid var(--sd-border);padding-top:14px">
-        Gestão de contas <span class="chip info sem-margem">admin</span></button>` : ""}
+        Gestão de contas <span class="chip info sem-margem">sistema</span></button>` : ""}
     </nav>
     <div class="drawer-foot">
       <button class="dnav" id="trocaTema">Tema <span class="chip info sem-margem">${document.documentElement.dataset.tema}</span></button>
@@ -1207,20 +1377,225 @@ function blocoAutenticidade(hash, token) {
     <div class="card-row">
       <div>
         <h3>Código de autenticidade</h3>
-        <div class="meta">Impressão digital deste laudo. Se qualquer detalhe mudasse,
-          o código seria outro — é assim que se prova que o documento não foi alterado.</div>
+        <div class="meta">Impressão digital do documento. Qualquer alteração muda o código.</div>
       </div>
       <span class="selo-ok">✓</span>
     </div>
     <div class="codigo">${codigoCurto(hash)}</div>
-    <div class="acoes-linha">
+    <div class="acoes-par">
       <button class="acao-min" onclick="navigator.clipboard?.writeText('${esc(hash)}');
-        eloToast('Código completo copiado')">Copiar código completo</button>
+        eloToast('Código completo copiado')">Copiar código</button>
       ${token ? `<a class="acao-min" target="_blank" rel="noopener"
-        href="${base}#verificar=${esc(token)}">Conferir autenticidade</a>` : ""}
+        href="${base}#verificar=${esc(token)}">Conferir</a>` : ""}
     </div>
   </div>`;
 }
+
+
+/* =====================================================================
+   FILA OFFLINE
+   Vistoria é trabalho de campo: subsolo, garagem, prédio velho. O sinal
+   cai e não avisa. Antes, cada toque disparava um UPDATE direto e, se
+   falhasse, o dado morria num toast de 2,8 segundos.
+
+   Agora toda escrita da vistoria passa por aqui: grava no IndexedDB
+   primeiro, tenta enviar, e se falhar fica na fila até o sinal voltar.
+   ===================================================================== */
+const Fila = (() => {
+  const BANCO = "elo-fila";
+  const LOJA = "pendentes";
+  let bd = null;
+  let enviando = false;
+  // navigator.onLine mente: diz "online" no wi-fi do prédio sem internet
+  // e dentro do elevador. Confiamos na falha real, não na promessa dele.
+  let semSinal = false;
+
+  function abrir() {
+    if (bd) return Promise.resolve(bd);
+    return new Promise((ok, erro) => {
+      const req = indexedDB.open(BANCO, 1);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains(LOJA)) {
+          d.createObjectStore(LOJA, { keyPath: "id", autoIncrement: true });
+        }
+      };
+      req.onsuccess = () => { bd = req.result; ok(bd); };
+      req.onerror = () => erro(req.error);
+    });
+  }
+
+  function tx(modo) {
+    return abrir().then((d) => d.transaction(LOJA, modo).objectStore(LOJA));
+  }
+
+  const pedir = (req) => new Promise((ok, erro) => {
+    req.onsuccess = () => ok(req.result);
+    req.onerror = () => erro(req.error);
+  });
+
+  async function guardar(tarefa) {
+    const loja = await tx("readwrite");
+    return pedir(loja.add({ ...tarefa, criada_em: Date.now(), tentativas: 0 }));
+  }
+
+  async function listar() {
+    const loja = await tx("readonly");
+    return pedir(loja.getAll());
+  }
+
+  async function remover(id) {
+    const loja = await tx("readwrite");
+    return pedir(loja.delete(id));
+  }
+
+  async function marcarTentativa(t) {
+    const loja = await tx("readwrite");
+    return pedir(loja.put({ ...t, tentativas: t.tentativas + 1, ultimo_erro: t.ultimo_erro }));
+  }
+
+  /* Executa uma tarefa da fila. Cada tipo sabe se refazer sozinho. */
+  async function executar(t) {
+    if (t.tipo === "item") {
+      await api.atualizarItem(t.item_id, t.campos);
+    } else if (t.tipo === "foto") {
+      const file = new File([t.blob], t.nome, { type: t.blob.type });
+      await api.enviarFoto(file, t.vistoria_id, t.item_id);
+    } else {
+      throw new Error("Tipo desconhecido na fila: " + t.tipo);
+    }
+  }
+
+  /* Envia tudo o que dá. Nunca joga erro para fora: se falhar, fica. */
+  async function enviar() {
+    if (enviando) return;
+    enviando = true;
+    try {
+      for (const t of await listar()) {
+        try {
+          await executar(t);
+          await remover(t.id);
+          semSinal = false;
+        } catch (e) {
+          // 3 tentativas para erro de rede. Erro de dado não adianta repetir.
+          const permanente = /não encontrad|permiss|inválid|duplicate key/i.test(e.message || "");
+          if (permanente || t.tentativas >= 3) {
+            await remover(t.id);
+            console.warn("Descartado da fila:", t.tipo, e.message);
+          } else {
+            semSinal = true;
+            await marcarTentativa({ ...t, ultimo_erro: e.message });
+          }
+          break;   // sem sinal, não adianta insistir nos próximos
+        }
+      }
+    } finally {
+      enviando = false;
+      atualizarSelo();
+    }
+  }
+
+  /* Grava e tenta enviar na hora. A tela não espera pelo envio. */
+  async function empurrar(tarefa) {
+    await guardar(tarefa);
+    atualizarSelo();
+    enviar();
+  }
+
+  async function pendentes() {
+    try { return (await listar()).length; } catch { return 0; }
+  }
+
+  async function atualizarSelo() {
+    const el = document.getElementById("seloFila");
+    if (!el) return;
+    const n = await pendentes();
+    if (n === 0) { el.className = "selo-fila"; el.textContent = ""; return; }
+    const ruim = semSinal || !navigator.onLine;
+    el.className = "selo-fila visivel " + (ruim ? "offline" : "enviando");
+    el.textContent = ruim
+      ? `${n} pendente${n > 1 ? "s" : ""} · sem sinal`
+      : `Enviando ${n}…`;
+  }
+
+  addEventListener("online", () => { atualizarSelo(); enviar(); });
+  addEventListener("offline", atualizarSelo);
+  setInterval(enviar, 20000);
+
+  return { empurrar, enviar, pendentes, atualizarSelo };
+})();
+
+/* ---------------------------------------------------------------------
+   Foto de celular tem 4 a 8 MB. Uma vistoria com 40 fotos sobe 250 MB
+   em 4G, e é a principal causa de upload falhando em campo.
+
+   O hash é calculado no arquivo ORIGINAL, antes de comprimir: é ele que
+   prova a integridade da foto tirada, não a versão reduzida.
+   --------------------------------------------------------------------- */
+async function comprimirFoto(file, maxLado = 1600, qualidade = 0.72) {
+  if (!file.type.startsWith("image/")) return file;
+  if (file.size < 400 * 1024) return file;          // já é pequena
+  try {
+    const bmp = await createImageBitmap(file);
+    const escala = Math.min(1, maxLado / Math.max(bmp.width, bmp.height));
+    if (escala === 1 && file.size < 1.5 * 1024 * 1024) { bmp.close?.(); return file; }
+
+    const l = Math.round(bmp.width * escala), a = Math.round(bmp.height * escala);
+    let blob;
+    if (typeof OffscreenCanvas !== "undefined") {
+      const cv = new OffscreenCanvas(l, a);
+      cv.getContext("2d").drawImage(bmp, 0, 0, l, a);
+      blob = await cv.convertToBlob({ type: "image/jpeg", quality: qualidade });
+    } else {
+      const cv = document.createElement("canvas");
+      cv.width = l; cv.height = a;
+      cv.getContext("2d").drawImage(bmp, 0, 0, l, a);
+      blob = await new Promise((r) => cv.toBlob(r, "image/jpeg", qualidade));
+    }
+    bmp.close?.();
+    if (!blob || blob.size >= file.size) return file;   // não piorou nada
+    return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg",
+      { type: "image/jpeg", lastModified: file.lastModified });
+  } catch {
+    return file;   // se a compressão falhar, manda a original
+  }
+}
+
+
+/* =====================================================================
+   CAPTURA DE ERRO
+   O erro vai para o banco em vez de morrer no console do celular do
+   cliente. Falha silenciosa aqui é proposital: erro ao reportar erro
+   não pode virar um segundo problema na tela de quem está trabalhando.
+   ===================================================================== */
+(() => {
+  const vistos = new Set();
+
+  async function reportar(msg, origem, pilha) {
+    if (!msg) return;
+    const chave = String(msg).slice(0, 120);
+    if (vistos.has(chave)) return;   // não inunda o banco com o mesmo erro
+    vistos.add(chave);
+    try {
+      await sb.rpc("registrar_erro", {
+        p_mensagem: String(msg),
+        p_origem: origem || null,
+        p_pilha: pilha || null,
+        p_tela: [app.aba, app.tela].filter(Boolean).join("/") || null,
+        p_url: location.href.split("#")[0],
+        p_user_agent: navigator.userAgent,
+      });
+    } catch { /* sem barulho */ }
+  }
+
+  addEventListener("error", (e) => {
+    reportar(e.message, `${e.filename || "?"}:${e.lineno || 0}`, e.error?.stack);
+  });
+  addEventListener("unhandledrejection", (e) => {
+    const r = e.reason;
+    reportar(r?.message || String(r), "promise", r?.stack);
+  });
+})();
 
 const brl = (n) => n == null ? null :
   Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
@@ -1537,7 +1912,8 @@ async function telaNovoImovel() {
       </div>` : ""}
   </div>`,
   `<button class="btn btn-primary" style="flex:1" id="salvarImovel">
-     ${editando ? "Salvar alterações" : "Salvar imóvel"}</button>`);
+     ${editando ? "Salvar alterações" : "Salvar imóvel"}</button>
+   ${editando ? `<button class="btn btn-ghost" id="excluirImovel">Excluir</button>` : ""}`);
   ligarMoldura();
 
   let coords = d.lat ? { lat: Number(d.lat), lng: Number(d.lng), precisao: 0 } : null;
@@ -1618,6 +1994,13 @@ async function telaNovoImovel() {
     catch (err) { toast(err.message); }
   });
 
+  document.getElementById("excluirImovel")?.addEventListener("click", async (e) => {
+    if (!confirm("Excluir este imóvel? A ação não pode ser desfeita.")) return;
+    const b = e.currentTarget; b.disabled = true; b.textContent = "…";
+    try { await api.excluirImovel(editandoId); toast("Imóvel excluído"); ir("imoveis"); }
+    catch (err) { toast(err.message); b.disabled = false; b.textContent = "Excluir"; }
+  });
+
   document.getElementById("salvarImovel").addEventListener("click", async (e) => {
     const b = e.currentTarget; b.disabled = true; b.textContent = "Salvando…";
     const num = (id) => { const x = v(id).replace(",", "."); return x ? Number(x) : null; };
@@ -1668,8 +2051,11 @@ async function telaVistoria() {
   const html = dados.ambientes.map((a) => {
     const n = a.itens.filter((i) => i.estado).length;
     return `
-    <div class="secao"><span>${esc(a.nome)}</span><span class="num">${n}/${a.itens.length}</span></div>
+    <div class="secao"><span>${esc(a.nome)}</span>
+      <span class="num" data-placar="${a.id}">${n}/${a.itens.length}</span></div>
     <div class="card-item">
+      <button class="tudo-bom" data-tudobom="${a.id}">
+        Tudo bom neste cômodo</button>
       ${a.itens.map((it) => {
         const anterior = it.observacao?.startsWith("Na entrada:") ? it.observacao : null;
         return `
@@ -1729,6 +2115,38 @@ async function telaVistoria() {
   const estados = {};
   todos.forEach((i) => (estados[i.id] = i.estado));
 
+  /* Num imóvel em bom estado, quase todos os itens são "bom". Confirmar
+     um a um é o grosso do trabalho do corretor em campo. Aqui ele marca
+     o cômodo inteiro e depois corrige só as exceções.
+     Só preenche o que está em branco: avaliação já feita não é tocada,
+     senão um toque distraído apagaria a ocorrência que ele acabou de
+     registrar. */
+  raiz.querySelectorAll("[data-tudobom]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const amb = dados.ambientes.find((a) => a.id === btn.dataset.tudobom);
+      if (!amb) return;
+
+      let n = 0;
+      for (const it of amb.itens) {
+        if (estados[it.id]) continue;
+        estados[it.id] = "bom";
+        Fila.empurrar({ tipo: "item", item_id: it.id, campos: { estado: "bom" } });
+
+        const linha = raiz.querySelector(`.linha-item[data-item="${it.id}"]`);
+        linha?.querySelectorAll(".est").forEach((e) =>
+          e.toggleAttribute("data-e", e.dataset.v === "bom"));
+        n++;
+      }
+
+      const placar = raiz.querySelector(`[data-placar="${amb.id}"]`);
+      if (placar) placar.textContent = `${amb.itens.length}/${amb.itens.length}`;
+
+      btn.textContent = n ? `${n} item(ns) marcado(s) como bom` : "Já estava tudo avaliado";
+      btn.classList.add("feito");
+      atualizarPlacar();
+    });
+  });
+
   function atualizarPlacar() {
     const feitos = Object.values(estados).filter(Boolean).length;
     const oc = Object.values(estados).filter((e) => RUINS.includes(e)).length;
@@ -1749,14 +2167,13 @@ async function telaVistoria() {
       if (novo) b.setAttribute("data-e", novo);
       detalhe.classList.toggle("oculto", !RUINS.includes(novo));
       atualizarPlacar();
-      // Otimista: a tela responde na hora, o banco confirma depois.
-      try { await api.atualizarItem(itemId, { estado: novo }); }
-      catch (e) { toast("Não salvou: " + e.message); }
+      // A tela responde na hora; a fila garante que chega ao banco,
+      // mesmo que o sinal só volte no estacionamento.
+      Fila.empurrar({ tipo: "item", item_id: itemId, campos: { estado: novo } });
     }));
 
-    linha.querySelector(".obs")?.addEventListener("blur", async (e) => {
-      try { await api.atualizarItem(itemId, { observacao: e.target.value }); }
-      catch (err) { toast("Não salvou: " + err.message); }
+    linha.querySelector(".obs")?.addEventListener("blur", (e) => {
+      Fila.empurrar({ tipo: "item", item_id: itemId, campos: { observacao: e.target.value } });
     });
 
     const inp = linha.querySelector(".inpFoto");
@@ -1764,23 +2181,35 @@ async function telaVistoria() {
     inp?.addEventListener("change", async () => {
       const btn = linha.querySelector(".addfoto");
       btn.disabled = true; btn.textContent = "…";
-      try {
-        for (const file of Array.from(inp.files)) {
-          const m = await api.enviarFoto(file, vistoriaId, itemId);
-          const img = document.createElement("img");
-          img.className = "thumb"; img.dataset.caminho = m.caminho;
-          linha.querySelector(".fotos").appendChild(img);
-          carregarThumb(img);
-        }
-      } catch (e) { toast(e.message); }
-      finally { btn.disabled = false; btn.textContent = "+"; inp.value = ""; }
+      for (const original of Array.from(inp.files)) {
+        const file = await comprimirFoto(original);
+        // A miniatura aparece na hora, do arquivo local. O corretor vê que
+        // a foto entrou mesmo sem sinal; o envio acontece quando puder.
+        const img = document.createElement("img");
+        img.className = "thumb"; img.src = URL.createObjectURL(file);
+        linha.querySelector(".fotos").appendChild(img);
+        Fila.empurrar({ tipo: "foto", blob: file, nome: file.name,
+                        vistoria_id: vistoriaId, item_id: itemId });
+      }
+      btn.disabled = false; btn.textContent = "+"; inp.value = "";
     });
   });
 
   raiz.querySelectorAll(".thumb[data-caminho]").forEach(carregarThumb);
 
   document.getElementById("btnPublicar").addEventListener("click", async (e) => {
-    const b = e.currentTarget; b.disabled = true; b.textContent = "Publicando…";
+    const b = e.currentTarget;
+    // Laudo publicado é imutável. Publicar com a fila cheia congelaria um
+    // documento sem as últimas fotos e avaliações, sem volta.
+    const faltam = await Fila.pendentes();
+    if (faltam > 0) {
+      await Fila.enviar();
+      if (await Fila.pendentes() > 0) {
+        toast(`${faltam} alteração(ões) ainda não subiram. Espere o sinal voltar.`);
+        return;
+      }
+    }
+    b.disabled = true; b.textContent = "Publicando…";
     try {
       // Cria de saída as partes que já conhecemos: proprietário (do cadastro)
       // e vistoriador (quem está logado). O inquilino entra depois, com nome.
@@ -1988,7 +2417,8 @@ async function telaLaudo() {
   </div>`,
   `<button class="btn btn-primary" style="flex:1" id="btnAssinar">Enviar para assinar</button>
    <button class="btn btn-ghost" id="btnPdf">PDF</button>
-   <button class="btn btn-ghost" id="btnLink">Link</button>`);
+   <button class="btn btn-ghost" id="btnLink">Link</button>
+   <button class="btn btn-ghost" id="btnExcluirLaudo">Excluir</button>`);
   ligarMoldura();
 
   document.getElementById("btnPdf").onclick = () => window.print();
@@ -2513,6 +2943,10 @@ const PARTES_ESPERADAS = {
   periodica: ["proprietario", "vistoriador"],
   captacao:  ["proprietario", "corretor"],
 };
+// Papel de quem usa o sistema dentro de uma conta.
+const ROT_MEMBRO = { titular:"Titular", gestor:"Gestor",
+  corretor:"Corretor", vistoriador:"Vistoriador" };
+
 const ROT_PAPEL = { proprietario: "Proprietário", inquilino: "Inquilino", fiador: "Fiador",
                     corretor: "Corretor", vistoriador: "Vistoriador", testemunha: "Testemunha" };
 // Um signatário só. Fiador e testemunha podem ser vários.
@@ -2555,7 +2989,7 @@ async function telaAdmin() {
       <div class="card-row abre-gestao" style="cursor:pointer">
         <div>
           <h3>${esc(c.nome)}</h3>
-          <div class="meta">${esc(c.email_dono || "—")}</div>
+          <div class="meta">${esc(c.email_titular || "—")}</div>
           <div class="meta">${c.imoveis} imóveis · ${c.laudos} laudos · ${c.membros} membro(s)</div>
           <span class="chip ${cor}">${ROT_STATUS[c.status] || "—"} · ${prazo}</span>
         </div>
@@ -2606,6 +3040,10 @@ async function telaAdmin() {
     <div class="view-head">
       <h2>Gestão de contas</h2>
       <div class="meta">${contas.length} contas · receita recorrente ${brl(receita)}/mês</div>
+      <div class="acoes-par" style="margin-top:10px">
+        <button class="acao-min" onclick="eloIr('erros')">Erros</button>
+        <button class="acao-min" onclick="eloIr('valores')">Valores</button>
+      </div>
     </div>
 
     <div class="numeros">
@@ -2960,19 +3398,140 @@ const ROT_CPF = { REGULAR:"Regular", PENDENTE:"Pendente de regularização",
   SUSPENSA:"Suspensa", CANCELADA:"Cancelada", "TITULAR FALECIDO":"Titular falecido",
   NULA:"Nula" };
 
-const par = (k, v) => v == null || v === "" ? ""
-  : `<div class="par"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`;
+// Valor longo empilha em vez de brigar com o alinhamento à direita.
+const par = (k, v) => {
+  if (v == null || v === "") return "";
+  const txt = String(v);
+  // 26 deixava a faixa de renda passar raspando e quebrar em duas linhas.
+  const cls = txt.length > 20 ? "par longo" : "par";
+  return `<div class="${cls}"><span class="k">${esc(k)}</span><span class="v">${esc(txt)}</span></div>`;
+};
+
+const subTitulo = (t) => `<div class="sub-titulo">${esc(t)}</div>`;
 
 const secao = (titulo, conta, corpo, aberta = false) => `
   <details class="rel-sec"${aberta ? " open" : ""}>
-    <summary>${esc(titulo)}<span class="conta">${conta}</span></summary>
+    <summary><span class="tit">${esc(titulo)}</span>
+      ${conta ? `<span class="conta">${esc(conta)}</span>` : ""}</summary>
     <div class="rel-corpo">${corpo}</div>
   </details>`;
+
+/* As bases devolvem código, não texto de gente. "15 A 20 SM" e "250K A
+   500K" não são para o corretor ler; o valor em reais, sim. */
+const SM_2026 = 1621;
+
+// Estimativa em faixa não merece centavos: dá falsa precisão.
+const brlCurto = (n) => "R$ " + Math.round(Number(n)).toLocaleString("pt-BR");
+
+function faixaRenda(f) {
+  if (!f || f === "SEM INFORMACAO") return "Não identificada";
+  const m = String(f).match(/(\d+)\s*A\s*(\d+)/i);
+  if (m) {
+    const [a, b] = [Number(m[1]), Number(m[2])];
+    return `${brlCurto(a * SM_2026)} a ${brlCurto(b * SM_2026)}`;
+  }
+  if (/ACIMA DE (\d+)/i.test(f)) {
+    return `Acima de ${brlCurto(Number(f.match(/ACIMA DE (\d+)/i)[1]) * SM_2026)}`;
+  }
+  if (/^0 A 1/.test(f)) return `Até ${brlCurto(SM_2026)}`;
+  return f;
+}
+
+function faixaPatrimonio(f) {
+  if (!f) return null;
+  const emReais = (t) => {
+    const n = String(t).match(/([\d.]+)\s*([KM])?/i);
+    if (!n) return t;
+    const base = Number(n[1]) * (n[2]?.toUpperCase() === "M" ? 1e6 : 1e3);
+    return brlCurto(base);
+  };
+  const m = String(f).match(/([\d.]+[KM]?)\s*A\s*([\d.]+[KM]?)/i);
+  if (m) return `${emReais(m[1])} a ${emReais(m[2])}`;
+  if (/ABAIXO DE (.+)/i.test(f)) return `Abaixo de ${emReais(f.match(/ABAIXO DE (.+)/i)[1])}`;
+  if (/ACIMA DE (.+)/i.test(f)) return `Acima de ${emReais(f.match(/ACIMA DE (.+)/i)[1])}`;
+  return f;
+}
+
+const ROT_GENERO = { M: "Masculino", F: "Feminino" };
+
+const capitalizar = (t) => !t ? t : String(t).toLowerCase()
+  .replace(/(^|[\s/-])([a-zà-ú])/g, (_, a, b) => a + b.toUpperCase())
+  .replace(/\b(De|Da|Do|Das|Dos|E)\b/g, (w) => w.toLowerCase());
 
 const vazio = (t) => `<div class="vazio-sec">${esc(t)}</div>`;
 
 const periodo = (ini, fim) =>
   `${ini ? dataBR(ini) : "—"} até ${fim ? dataBR(fim) : "hoje"}`;
+
+/* Cinco fatos, uma linha cada. É o que o corretor confere de relance
+   depois de ler o veredito. O resto vai para a tela cheia. */
+function resumoFicha(s, fichaId) {
+  if (!s) return "";
+  const p = s.pessoais || {}, rt = s.restritivo || {}, fi = s.financeiro || {};
+  const pr = s.profissional || {}, pc = s.processos || [];
+
+  const comoReu = pc.filter((x) => x.polo === "reu").length;
+  const atual = pr.atual;
+
+  const linha = (rot, valor, tom) => `
+    <div class="par"><span class="k">${esc(rot)}</span>
+      <span class="v"${tom ? ` style="color:var(--sd-${tom})"` : ""}>${esc(valor)}</span></div>`;
+
+  return `
+    <div class="secao"><span>Resumo</span></div>
+    <div class="card-item">
+      ${linha("Situação do CPF", ROT_CPF[p.situacao_cpf] || "—",
+              p.situacao_cpf === "REGULAR" ? "success" : "danger")}
+      ${linha("Score de crédito", rt.score != null
+              ? `${rt.score} · ${rt.nivel}` : "não informado")}
+      ${linha("Renda estimada", faixaRenda(fi.faixa_renda))}
+      ${linha("Dívidas e protestos",
+              (rt.total_debitos || rt.total_protestos)
+                ? brlCurto((rt.total_debitos || 0) + (rt.total_protestos || 0))
+                : "nenhuma",
+              (rt.total_debitos || rt.total_protestos) ? "danger" : "success")}
+      ${linha("Vínculo atual", atual ? capitalizar(atual.empresa) : "nenhum identificado")}
+      ${linha("Processos como réu", comoReu ? String(comoReu) : "nenhum",
+              comoReu ? "warning" : "success")}
+      <button class="btn btn-bloco nao-imprime" style="margin-top:12px"
+        onclick="eloAbrir('relatorioFicha',{fichaId:'${fichaId}'})">
+        Ver relatório completo</button>
+    </div>`;
+}
+
+/* Relatório em tela cheia. Quem chega aqui quer conferir com calma:
+   merece a tela inteira, não oito barras espremidas sob o veredito. */
+async function telaRelatorioFicha() {
+  const id = app.ctx.fichaId;
+  raiz.innerHTML = moldura(carregando("Carregando relatório…"));
+  ligarMoldura();
+
+  let f;
+  try { f = await api.ficha(id); }
+  catch (e) { toast(e.message); return voltar(); }
+
+  raiz.innerHTML = moldura(`<div class="view">
+    <button class="volta" onclick="eloVoltar()">← Ficha</button>
+    <div class="pag-cabecalho">
+      <img src="logoelo.png" alt="Elo" onerror="this.remove()">
+      <div><div class="t">Relatório completo</div>
+        <div class="s">${esc(app.conta.nome)} · ${esc(f.nome)}</div></div>
+    </div>
+    <div class="view-head"><h2>${esc(f.nome)}</h2>
+      <div class="meta">${esc(mascaraCpf(f.cpf_cnpj))} · consultado em ${
+        dataHoraBR(f.consulta_em)}</div></div>
+    ${relatorioCompleto(f.consulta_bruta?.secoes)}
+  </div>`, `<button class="btn btn-primary btn-bloco" id="pdfRelatorio">PDF</button>`);
+  ligarMoldura();
+
+  document.getElementById("pdfRelatorio").addEventListener("click", () => {
+    const secs = [...document.querySelectorAll(".rel-sec")];
+    const antes = secs.map((x) => x.open);
+    secs.forEach((x) => { x.open = true; });
+    window.print();
+    setTimeout(() => secs.forEach((x, i) => { x.open = antes[i]; }), 500);
+  });
+}
 
 function relatorioCompleto(s) {
   if (!s) return "";
@@ -2983,43 +3542,51 @@ function relatorioCompleto(s) {
   const blocos = [];
 
   blocos.push(secao("Dados pessoais", "", [
-    par("Nome", p.nome), par("CPF", p.cpf ? mascaraCpf(p.cpf) : null),
+    par("Nome", capitalizar(p.nome)), par("CPF", p.cpf ? mascaraCpf(p.cpf) : null),
     par("Situação na Receita", ROT_CPF[p.situacao_cpf] || p.situacao_cpf),
     par("Desde", p.data_situacao ? dataBR(p.data_situacao) : null),
     par("Nascimento", p.nascimento
-      ? `${dataBR(p.nascimento)}${p.idade ? ` (${p.idade} anos)` : ""}` : null),
-    par("Gênero", p.genero), par("Nacionalidade", p.nacionalidade), par("Mãe", p.mae),
+      ? `${dataBR(p.nascimento)}${p.idade ? ` · ${p.idade} anos` : ""}` : null),
+    par("Gênero", ROT_GENERO[p.genero] || p.genero),
+    par("Nacionalidade", capitalizar(p.nacionalidade)),
+    par("Nome da mãe", capitalizar(p.mae)),
     p.falecido ? `<div class="erro">Há indicação de óbito nas bases consultadas.</div>` : "",
   ].join("") || vazio("Sem dados."), true));
 
   const rest = [
-    par("Score", rt.score != null
-      ? `${rt.score}${rt.nivel ? " " + rt.nivel : ""}` : null),
-    par("Leitura", rt.nivel ? ROT_RISCO[rt.nivel] : null),
+    par("Score de crédito", rt.score != null
+      ? `${rt.score}${rt.nivel ? " · " + rt.nivel : ""}` : null),
+    par("Interpretação", rt.nivel ? ROT_RISCO[rt.nivel] : null),
     par("Débitos em aberto", brl(rt.total_debitos || 0)),
     par("Protestos", brl(rt.total_protestos || 0)),
     par("Cheques devolvidos", String(rt.cheques_devolvidos ?? 0)),
+    (rt.debitos || []).length ? subTitulo("Débitos encontrados") : "",
     (rt.debitos || []).map((d) => `<div class="item-lista">
-        <div class="tit">${esc(d.credor)} — ${brl(d.valor)}</div>
+        <span class="cifra">${brl(d.valor)}</span>
+        <div class="tit">${esc(capitalizar(d.credor))}</div>
         <div class="sub">${[d.data && dataBR(d.data), d.origem].filter(Boolean).map(esc).join(" · ")}</div>
       </div>`).join(""),
+    (rt.protestos || []).length ? subTitulo("Protestos") : "",
     (rt.protestos || []).map((x) => `<div class="item-lista">
-        <div class="tit">${esc(x.cartorio)} — ${brl(x.valor)}</div>
+        <span class="cifra">${brl(x.valor)}</span>
+        <div class="tit">${esc(capitalizar(x.cartorio))}</div>
         <div class="sub">${[[x.cidade, x.uf].filter(Boolean).join("/"), x.data && dataBR(x.data)]
           .filter(Boolean).map(esc).join(" · ")}</div>
       </div>`).join(""),
     rt.consultado_biro ? "" :
       `<div class="aviso-linha warn">Dados restritivos não retornados nesta consulta</div>`,
   ].join("");
-  blocos.push(secao("Restrição financeira", "SPC · Serasa · protestos", rest, true));
+  blocos.push(secao("Restrição financeira", "", rest, true));
 
-  blocos.push(secao("Informações financeiras", `${(fi.irpf || []).length} IRPF`, [
-    par("Renda mensal estimada", fi.faixa_renda === "SEM INFORMACAO" ? "Sem informação" : fi.faixa_renda),
-    par("Patrimônio estimado", fi.patrimonio),
+  blocos.push(secao("Informações financeiras", "", [
+    par("Renda mensal estimada", faixaRenda(fi.faixa_renda)),
+    par("Patrimônio estimado", faixaPatrimonio(fi.patrimonio) || "Não identificado"),
+    (fi.irpf || []).length ? subTitulo("Declarações de imposto de renda") : "",
     (fi.irpf || []).length
       ? (fi.irpf || []).map((d) => `<div class="item-lista">
-          <div class="tit">Exercício ${esc(String(d.ano ?? "—"))}${d.situacao ? " · " + esc(d.situacao) : ""}</div>
-          <div class="sub">${[d.banco, d.agencia && "agência " + d.agencia]
+          <span class="cifra">${esc(String(d.ano ?? "—"))}</span>
+          <div class="tit">${esc(capitalizar(d.situacao) || "Declaração entregue")}</div>
+          <div class="sub">${[capitalizar(d.banco), d.agencia && "agência " + d.agencia]
             .filter(Boolean).map(esc).join(" · ") || "Sem dados bancários"}</div>
         </div>`).join("")
       : vazio("Nenhuma declaração encontrada."),
@@ -3028,18 +3595,22 @@ function relatorioCompleto(s) {
   blocos.push(secao("Histórico profissional", `${(pr.historico || []).length}`,
     (pr.historico || []).length
       ? (pr.historico || []).map((v) => `<div class="item-lista">
-          <div class="tit">${esc(v.empresa)}${v.fim ? "" : " · atual"}</div>
-          <div class="sub">${[v.classificacao, v.setor, periodo(v.inicio, v.fim)]
-            .filter(Boolean).map(esc).join(" · ")}</div>
+          ${!v.fim ? `<span class="cifra" style="color:var(--sd-success)">atual</span>` : ""}
+          <div class="tit">${esc(capitalizar(v.empresa))}</div>
+          <div class="sub">${esc([v.classificacao, periodo(v.inicio, v.fim)]
+            .filter(Boolean).join(" · "))}</div>
+          ${v.setor ? `<div class="sub">${esc(v.setor.replace(/^Privado - /, ""))}</div>` : ""}
         </div>`).join("")
       : vazio("Nenhum vínculo encontrado.")));
 
   blocos.push(secao("Antecedentes judiciais", `${pc.length}`,
     pc.length
       ? pc.map((x) => `<div class="item-lista">
-          <div class="tit">${esc(x.classe)}${x.assunto ? " — " + esc(x.assunto) : ""}</div>
-          <div class="sub">${[x.tribunal, x.numero, x.data && dataBR(x.data),
-            x.valor && brl(x.valor)].filter(Boolean).map(esc).join(" · ")}</div>
+          ${x.valor ? `<span class="cifra">${brl(x.valor)}</span>` : ""}
+          <div class="tit">${esc(capitalizar(x.assunto) || x.classe)}</div>
+          <div class="sub">${esc([x.classe, x.tribunal].filter(Boolean).join(" · "))}</div>
+          <div class="sub">${esc([x.numero, x.data && dataBR(x.data)]
+            .filter(Boolean).join(" · "))}</div>
           ${(x.partes || []).length ? `<div class="sub">Partes: ${
             x.partes.map((q) => esc(q.nome) + (q.papel ? ` (${esc(q.papel)})` : "")).join(", ")}</div>` : ""}
           <div class="sub"><span class="chip ${x.polo === "requerente" ? "ok" : "warn"} sem-margem">${
@@ -3052,13 +3623,15 @@ function relatorioCompleto(s) {
   blocos.push(secao("Relacionamentos",
     `${(rl.familiares || []).length + (rl.economicos || []).length}`,
     [
+      (rl.economicos || []).length ? subTitulo("Participações societárias") : "",
       (rl.economicos || []).map((e) => `<div class="item-lista">
-        <div class="tit">${esc(e.empresa)}</div>
-        <div class="sub">${[e.vinculo, e.cnpj, e.desde && "desde " + dataBR(e.desde)]
-          .filter(Boolean).map(esc).join(" · ")}</div></div>`).join(""),
+        <div class="tit">${esc(capitalizar(e.empresa))}</div>
+        <div class="sub">${esc([capitalizar(e.vinculo), e.cnpj && mascaraDoc(e.cnpj),
+          e.desde && "desde " + dataBR(e.desde)].filter(Boolean).join(" · "))}</div></div>`).join(""),
+      (rl.familiares || []).length ? subTitulo("Vínculos familiares") : "",
       (rl.familiares || []).map((f) => `<div class="item-lista">
-        <div class="tit">${esc(f.nome)}</div>
-        <div class="sub">${esc(f.parentesco || "Vínculo familiar")}</div></div>`).join(""),
+        <div class="tit">${esc(capitalizar(f.nome))}</div>
+        <div class="sub">${esc(capitalizar(f.parentesco) || "Vínculo familiar")}</div></div>`).join(""),
     ].join("") || vazio("Nenhum relacionamento encontrado.")));
 
   blocos.push(secao("Servidor público", sv.ativo ? "sim" : "não",
@@ -3081,10 +3654,14 @@ function relatorioCompleto(s) {
           .filter(Boolean).map(esc).join(" · ")}</div></div>`).join(""),
       (c.emails || []).map((e) => `<div class="item-lista">
         <div class="tit">${esc(e.email)}</div></div>`).join(""),
+      (c.enderecos || []).length ? subTitulo("Endereços") : "",
       (c.enderecos || []).map((a) => `<div class="item-lista">
-        <div class="tit">${esc(a.logradouro)}${a.complemento ? ", " + esc(a.complemento) : ""}</div>
-        <div class="sub">${[a.bairro, [a.cidade, a.uf].filter(Boolean).join("/"), a.cep]
-          .filter(Boolean).map(esc).join(" · ")}</div></div>`).join(""),
+        <div class="tit">${esc(capitalizar(a.logradouro))}${
+          a.complemento ? ", " + esc(capitalizar(a.complemento)) : ""}</div>
+        <div class="sub">${esc([capitalizar(a.bairro),
+          [capitalizar(a.cidade), a.uf].filter(Boolean).join(" / "),
+          a.cep && a.cep.replace(/(\d{5})(\d{3})/, "$1-$2")]
+          .filter(Boolean).join(" · "))}</div></div>`).join(""),
     ].join("") || vazio("Nenhum contato encontrado.")));
 
   return `<div class="secao"><span>Relatório completo</span></div>${blocos.join("")}
@@ -3233,7 +3810,1012 @@ function blocoDecisao(f) {
     </div>`;
 }
 
+
+/* =====================================================================
+   PAINEL: ERROS E VALORES
+   Sem a tela de erros, você só descobre um bug quando o cliente reclama.
+   E nem sempre reclama: às vezes só para de usar.
+   ===================================================================== */
+async function telaErros() {
+  raiz.innerHTML = moldura(`<div class="view">
+    <button class="volta" onclick="eloIr('admin')">← Gestão de contas</button>
+    <div class="view-head"><h2>Erros</h2></div>${carregando()}</div>`);
+  ligarMoldura();
+
+  let lista = [];
+  try { lista = await api.errosRecentes(7); } catch (e) { toast(e.message); }
+
+  const corpo = lista.length === 0
+    ? `<div class="card-item"><div class="empty"><b>Nenhum erro em 7 dias</b>
+        Nada quebrou no aplicativo dos seus clientes.</div></div>`
+    : lista.map((e) => `
+      <div class="card-item">
+        <div class="card-row">
+          <div><h3 style="font-size:.95rem">${esc(e.mensagem)}</h3>
+            <div class="meta">${esc(e.telas || "—")}</div>
+            <div class="meta">Último em ${dataHoraBR(e.ultima)}</div></div>
+          <span class="chip ${e.ocorrencias > 5 ? "bad" : "warn"} sem-margem">${e.ocorrencias}×</span>
+        </div>
+        <div class="meta">${e.contas} conta(s) afetada(s)</div>
+      </div>`).join("");
+
+  raiz.innerHTML = moldura(`<div class="view">
+    <button class="volta" onclick="eloIr('admin')">← Gestão de contas</button>
+    <div class="view-head"><h2>Erros</h2>
+      <div class="meta">Últimos 7 dias, agrupados por mensagem.</div></div>
+    ${corpo}</div>`);
+  ligarMoldura();
+}
+
+async function telaValores() {
+  raiz.innerHTML = moldura(`<div class="view">
+    <button class="volta" onclick="eloIr('admin')">← Gestão de contas</button>
+    <div class="view-head"><h2>Valores</h2></div>${carregando()}</div>`);
+  ligarMoldura();
+
+  let planos = [], cfg = {};
+  try { [planos, cfg] = await Promise.all([api.planosComerciais(), api.configComercial()]); }
+  catch (e) { toast(e.message); }
+
+  const porModulo = (m) => planos.filter((p) => p.modulo_id === m && p.ativo);
+
+  const linha = (p) => `
+    <div class="card-item">
+      <div class="card-row">
+        <div><h3 style="font-size:.95rem">${esc(p.nome)}</h3>
+          <div class="meta">${p.publico === "imobiliaria"
+            ? `${p.min_corretores} a ${p.max_corretores} corretores`
+            : "Corretor autônomo"}${
+            p.fichas_inclusas != null ? ` · ${p.fichas_inclusas} fichas` : ""}</div></div>
+      </div>
+      <div class="dupla">
+        <div class="campo"><label>Mensalidade (R$)</label>
+          <input inputmode="decimal" data-preco="${p.id}" value="${p.preco_mensal}"></div>
+        ${p.modulo_id === "analise" ? `
+        <div class="campo"><label>Ficha extra (R$)</label>
+          <input inputmode="decimal" data-extra="${p.id}" value="${p.preco_ficha_extra ?? ""}"></div>`
+        : `<div class="campo"><label>Vistoriadores</label>
+          <input inputmode="numeric" data-vist="${p.id}" value="${p.limite_vistoriadores}"></div>`}
+      </div>
+      ${p.modulo_id === "analise" ? `
+      <div class="campo"><label>Fichas inclusas por mês</label>
+        <input inputmode="numeric" data-fichas="${p.id}" value="${p.fichas_inclusas ?? ""}"></div>` : ""}
+    </div>`;
+
+  raiz.innerHTML = moldura(`<div class="view formulario">
+    <button class="volta" onclick="eloIr('admin')">← Gestão de contas</button>
+    <div class="view-head"><h2>Valores</h2>
+      <div class="meta">Preços dos dois módulos e o desconto do pacote.</div></div>
+
+    <div class="card-item">
+      <div class="campo"><label>Desconto ao assinar os dois módulos (%)</label>
+        <input id="vl_desc" inputmode="decimal" value="${cfg.desconto_pacote_pct ?? 10}"></div>
+      <div class="meta">Só é aplicado quando Gestão e Análise entram juntos.</div>
+    </div>
+
+    <div class="secao"><span>Módulo Gestão</span></div>
+    ${porModulo("gestao").map(linha).join("")}
+
+    <div class="secao"><span>Módulo Análise</span></div>
+    ${porModulo("analise").map(linha).join("")}
+
+    <div id="vl_erro"></div>
+  </div>`, `<button class="btn btn-primary btn-bloco" id="vl_salvar">Salvar valores</button>`);
+  ligarMoldura();
+
+  document.getElementById("vl_salvar").addEventListener("click", async (ev) => {
+    const b = ev.currentTarget, box = document.getElementById("vl_erro");
+    box.innerHTML = "";
+    const num = (s) => { const n = parseFloat(String(s).replace(",", ".")); return Number.isFinite(n) ? n : null; };
+
+    const mudancas = {};
+    const junta = (attr, campo, conv) =>
+      raiz.querySelectorAll(`[data-${attr}]`).forEach((el) => {
+        const id = el.dataset[attr];
+        (mudancas[id] ||= { id })[campo] = conv(el.value);
+      });
+    junta("preco", "preco_mensal", num);
+    junta("extra", "preco_ficha_extra", num);
+    junta("fichas", "fichas_inclusas", (v) => v === "" ? null : parseInt(v, 10));
+    junta("vist", "limite_vistoriadores", (v) => parseInt(v, 10) || 3);
+
+    const desc = num(document.getElementById("vl_desc").value);
+    if (desc == null || desc < 0 || desc > 100) {
+      box.innerHTML = `<div class="erro">Desconto deve ficar entre 0 e 100.</div>`; return;
+    }
+    for (const m of Object.values(mudancas)) {
+      if (m.preco_mensal == null || m.preco_mensal < 0) {
+        box.innerHTML = `<div class="erro">Mensalidade inválida em algum plano.</div>`; return;
+      }
+    }
+
+    b.disabled = true; b.textContent = "Salvando…";
+    try {
+      await api.salvarValores(Object.values(mudancas), desc);
+      toast("Valores atualizados");
+      telaValores();
+    } catch (e) {
+      box.innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+      b.disabled = false; b.textContent = "Salvar valores";
+    }
+  });
+}
+
+/* =====================================================================
+   VITRINE PÚBLICA — #planos
+   Link para mandar no WhatsApp. A pessoa escolhe os módulos, vê o preço
+   com o desconto e só então se cadastra. Sem login, sem cadastro antes
+   de saber quanto custa.
+   ===================================================================== */
+async function paginaPlanos() {
+  raiz.innerHTML = `<div class="app"><div class="conteudo">${carregando("Carregando planos…")}</div></div>`;
+
+  let d = { planos: [], desconto_pct: 0 };
+  try { d = await api.planosPublicos(); } catch (e) { toast(e.message); }
+
+  // Autônomo abre selecionado: é o caso mais comum de quem chega pelo link.
+  let publico = "autonomo";
+  const escolha = { gestao: null, analise: null };
+
+  function desenhar() {
+    const doTipo = (m) => d.planos.filter((p) => p.modulo === m && p.publico === publico);
+    const gestao = doTipo("gestao"), analise = doTipo("analise");
+
+    const g = gestao.find((p) => p.id === escolha.gestao);
+    const a = analise.find((p) => p.id === escolha.analise);
+    const sub = (g?.preco ?? 0) + (a?.preco ?? 0);
+    const desc = (g && a) ? sub * d.desconto_pct / 100 : 0;
+
+    const cartao = (p, chave) => {
+      const sel = escolha[chave] === p.id;
+      return `<button class="cartao-plano ${sel ? "escolhido" : ""}"
+        data-escolhe="${chave}" data-id="${p.id}">
+        <div class="card-row">
+          <div>
+            <h3>${esc(p.nome.split("·").slice(1).join("·").trim() || p.nome)}</h3>
+            <div class="meta">${p.modulo === "gestao"
+              ? (p.publico === "imobiliaria"
+                 ? `${p.min_corretores} a ${p.max_corretores} corretores · ${p.vistoriadores} vistoriadores`
+                 : `1 corretor · ${p.vistoriadores} vistoriadores`)
+              : `${p.fichas_inclusas} fichas por mês · extra ${brl(p.preco_ficha_extra)}`}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:700;font-size:1.05rem">${brl(p.preco)}</div>
+            <div class="meta">por mês</div>
+          </div>
+        </div>
+      </button>`;
+    };
+
+    raiz.innerHTML = `<div class="app"><div class="conteudo"><div class="view">
+      <div class="pag-cabecalho">
+        <img src="logoelo.png" alt="Elo" onerror="this.remove()">
+        <div><div class="t">Elo IMOB</div><div class="s">Planos e preços</div></div>
+      </div>
+
+      <div class="view-head"><h2>Monte o seu plano</h2>
+        <div class="meta">Contrate um módulo, o outro, ou os dois com
+          ${d.desconto_pct}% de desconto.</div></div>
+
+      <div class="chips" style="margin-bottom:14px">
+        <button class="chip-esc ${publico === "autonomo" ? "on" : ""}"
+          data-publico="autonomo">Corretor autônomo</button>
+        <button class="chip-esc ${publico === "imobiliaria" ? "on" : ""}"
+          data-publico="imobiliaria">Imobiliária</button>
+      </div>
+
+      <div class="secao"><span>Gestão</span></div>
+      <div class="meta" style="padding:0 2px 8px;line-height:1.5">Imóveis,
+        vistorias com foto, laudos com código de autenticidade, contratos
+        e assinatura eletrônica.</div>
+      ${gestao.map((p) => cartao(p, "gestao")).join("")}
+
+      <div class="secao"><span>Análise de crédito</span></div>
+      <div class="meta" style="padding:0 2px 8px;line-height:1.5">O candidato
+        autoriza pelo WhatsApp e o sistema devolve um parecer com a decisão
+        e a justificativa.</div>
+      ${analise.map((p) => cartao(p, "analise")).join("")}
+
+      <div class="secao"><span>Total</span></div>
+      <div class="card-item">
+        ${!g && !a ? `<div class="meta">Escolha ao menos um módulo acima.</div>` : `
+          ${g ? `<div class="linha-item"><span class="meta">${esc(g.nome)}</span>
+            <div><b>${brl(g.preco)}</b></div></div>` : ""}
+          ${a ? `<div class="linha-item"><span class="meta">${esc(a.nome)}</span>
+            <div><b>${brl(a.preco)}</b></div></div>` : ""}
+          ${desc > 0 ? `<div class="linha-item">
+            <span class="meta" style="color:var(--sd-success)">Desconto de
+              ${d.desconto_pct}% por levar os dois</span>
+            <div><b style="color:var(--sd-success)">− ${brl(desc)}</b></div></div>` : ""}
+          <div class="linha-item"><span class="meta">Total mensal</span>
+            <div><b style="font-size:1.2rem">${brl(sub - desc)}</b></div></div>`}
+      </div>
+
+      <div class="card-item">
+        <div class="meta" style="line-height:1.55">Sem fidelidade. Cancele
+          quando quiser, com efeito ao fim do mês pago.</div>
+      </div>
+    </div></div>
+    <div class="barra">
+      <a class="btn btn-primary btn-bloco" id="btnComecar"
+         href="${location.pathname}#cadastro-plano=${
+           [escolha.gestao, escolha.analise].filter(Boolean).join(",")}"
+         style="${(!g && !a) ? "pointer-events:none;opacity:.5" : ""}">
+        ${(!g && !a) ? "Escolha um módulo" : `Começar por ${brl(sub - desc)}/mês`}</a>
+    </div></div>`;
+
+    raiz.querySelectorAll("[data-publico]").forEach((b) =>
+      b.addEventListener("click", () => {
+        publico = b.dataset.publico;
+        escolha.gestao = null; escolha.analise = null;   // preços mudam
+        desenhar();
+      }));
+
+    raiz.querySelectorAll("[data-escolhe]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const k = b.dataset.escolhe;
+        escolha[k] = escolha[k] === b.dataset.id ? null : b.dataset.id;  // toca de novo, desmarca
+        desenhar();
+      }));
+  }
+
+  desenhar();
+}
+
+/* =====================================================================
+   ACEITE DOS DOCUMENTOS LEGAIS
+   Fica antes de tudo: enquanto houver documento pendente, o app não abre.
+   O registro guarda data, IP, dispositivo e a versão exata aceita — é o
+   que prova o consentimento se um dia for questionado.
+   ===================================================================== */
+const ROT_DOC = { termos: "Termos de Uso", privacidade: "Política de Privacidade" };
+
+// Markdown mínimo, só o que os documentos usam. Nada de biblioteca.
+function textoLegal(md) {
+  const linhas = String(md).split("\n");
+  let html = "", tabela = false;
+
+  for (const l of linhas) {
+    const t = l.trim();
+    if (t.startsWith("|")) {
+      const celulas = t.split("|").slice(1, -1).map((c) => c.trim());
+      if (/^-+$/.test(celulas.join("").replace(/[|\s]/g, "")) || celulas.every((c) => /^-+$/.test(c))) continue;
+      if (!tabela) { html += `<table class="tab-legal">`; tabela = true; }
+      html += `<tr>${celulas.map((c) => `<td>${negrito(c)}</td>`).join("")}</tr>`;
+      continue;
+    }
+    if (tabela) { html += `</table>`; tabela = false; }
+
+    if (t.startsWith("## ")) html += `<h3>${esc(t.slice(3))}</h3>`;
+    else if (t.startsWith("# ")) html += `<h2>${esc(t.slice(2))}</h2>`;
+    else if (t === "") html += "";
+    else html += `<p class="doc-p">${negrito(t)}</p>`;
+  }
+  if (tabela) html += `</table>`;
+  return html;
+
+  function negrito(s) {
+    return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  }
+}
+
+async function telaAceite(pendentes) {
+  let i = 0;
+
+  async function mostrar() {
+    const d = pendentes[i];
+    let doc = null;
+    try { doc = await api.documento(d.id); } catch (e) { toast(e.message); }
+
+    raiz.innerHTML = `<div class="app"><div class="conteudo"><div class="view">
+      <div class="pag-cabecalho">
+        <img src="logoelo.png" alt="Elo" onerror="this.remove()">
+        <div><div class="t">${esc(ROT_DOC[d.tipo] || d.tipo)}</div>
+          <div class="s">Versão ${esc(d.versao)}</div></div>
+      </div>
+      <div class="view-head">
+        <div class="meta">Para continuar usando o Elo IMOB, leia e aceite
+          o documento abaixo. ${pendentes.length > 1
+            ? `Documento ${i + 1} de ${pendentes.length}.` : ""}</div>
+      </div>
+      <div class="card-item" id="corpoLegal" style="max-height:58vh;overflow-y:auto">
+        ${doc ? textoLegal(doc.conteudo) : carregando()}
+      </div>
+      <div id="aceiteErro"></div>
+    </div></div>
+    <div class="barra">
+      <button class="btn btn-primary btn-bloco" id="btnAceitar" disabled>
+        Role até o fim para aceitar</button>
+    </div></div>`;
+
+    // Só libera o botão depois que a pessoa realmente chegou ao fim.
+    // "Aceito sem ler" é o padrão do mercado; não precisa ser o seu.
+    const corpo = document.getElementById("corpoLegal");
+    const btn = document.getElementById("btnAceitar");
+    const conferir = () => {
+      if (corpo.scrollTop + corpo.clientHeight >= corpo.scrollHeight - 24) {
+        btn.disabled = false;
+        btn.textContent = `Li e aceito os ${ROT_DOC[d.tipo]}`;
+      }
+    };
+    corpo.addEventListener("scroll", conferir);
+    setTimeout(conferir, 300);   // documento curto já cabe na tela
+
+    btn.addEventListener("click", async () => {
+      btn.disabled = true; btn.textContent = "Registrando…";
+      try {
+        await api.aceitar(d.id);
+        i += 1;
+        if (i < pendentes.length) return mostrar();
+        app.pendentesLegais = [];
+        render();
+      } catch (e) {
+        document.getElementById("aceiteErro").innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+        btn.disabled = false; btn.textContent = "Tentar de novo";
+      }
+    });
+  }
+
+  mostrar();
+}
+
+/* =====================================================================
+   CONTRATAÇÃO
+   Escolhe os módulos, mostra a conta aberta com o desconto e abre a
+   assinatura no Asaas. O preço vem sempre do banco, nunca da tela.
+   ===================================================================== */
+async function telaContratar(preSelecao = null) {
+  raiz.innerHTML = moldura(`<div class="view">
+    <div class="view-head"><h2>Assinatura</h2></div>${carregando()}</div>`);
+  ligarMoldura();
+
+  let planos = [], modulos = [], fat = null;
+  try {
+    [planos, modulos, fat] = await Promise.all([
+      api.planosComerciais(),
+      api.meusModulos().catch(() => []),
+      api.faturamento().catch(() => null),
+    ]);
+  } catch (e) { toast(e.message); }
+
+  const publico = app.conta.tipo === "imobiliaria" ? "imobiliaria" : "autonomo";
+  const doPublico = (m) => planos.filter((p) =>
+    p.modulo_id === m && p.ativo && p.publico === publico);
+
+  const ativo = Object.fromEntries(modulos.map((m) => [m.modulo_id, m]));
+  const gestao = doPublico("gestao"), analise = doPublico("analise");
+
+  // Estado local da escolha. Módulo já ativo entra marcado e travado.
+  const escolha = {
+    gestao: ativo.gestao?.ativo ? null : (gestao[0]?.id ?? null),
+    analise: ativo.analise?.ativo ? null : null,
+  };
+  // Veio da vitrine: respeita o que a pessoa já escolheu lá.
+  if (preSelecao?.length) {
+    escolha.gestao = preSelecao.find((id) => gestao.some((p) => p.id === id)) ?? escolha.gestao;
+    escolha.analise = preSelecao.find((id) => analise.some((p) => p.id === id)) ?? null;
+  }
+
+  const bloco = (titulo, lista, chave, jaTem, fim) => `
+    <div class="secao"><span>${titulo}</span></div>
+    <div class="card-item">
+      ${jaTem ? `<div class="aviso-linha warn">Já contratado${
+        fim ? ", vigente até " + dataBR(fim) : ""}.</div>` : `
+      <div class="campo">
+        <select data-modulo="${chave}">
+          <option value="">Não contratar</option>
+          ${lista.map((p) => `<option value="${p.id}" ${
+            escolha[chave] === p.id ? "selected" : ""}>${esc(p.nome)} — ${
+            brl(p.preco_mensal)}/mês</option>`).join("")}
+        </select>
+      </div>
+      ${chave === "analise" && lista[0] ? `<div class="meta" style="line-height:1.5">
+        ${lista[0].fichas_inclusas} fichas por mês inclusas. Ficha adicional
+        ${brl(lista[0].preco_ficha_extra)}.</div>` : ""}
+      ${chave === "gestao" && lista[0] ? `<div class="meta" style="line-height:1.5">
+        Até ${lista[0].limite_vistoriadores} vistoriadores credenciados,
+        sem ocupar vaga de corretor.</div>` : ""}`}
+    </div>`;
+
+  raiz.innerHTML = moldura(`<div class="view formulario">
+    <div class="view-head"><h2>Assinatura</h2>
+      <div class="meta">Contrate um módulo, o outro, ou os dois com desconto.</div></div>
+
+    ${!fat ? `<div class="card-item">
+      <div class="aviso-linha warn">Preencha os dados de faturamento antes de contratar.</div>
+      <button class="btn btn-bloco" onclick="eloIr('faturamento')"
+        style="margin-top:10px">Ir para Faturamento</button>
+    </div>` : ""}
+
+    ${bloco("Gestão", gestao, "gestao", ativo.gestao?.ativo, ativo.gestao?.fim)}
+    ${bloco("Análise de crédito", analise, "analise", ativo.analise?.ativo, ativo.analise?.fim)}
+
+    <div class="secao"><span>Total</span></div>
+    <div class="card-item" id="resumo">
+      <div class="meta">Escolha ao menos um módulo.</div>
+    </div>
+
+    <div class="card-item">
+      <div class="campo"><label>Forma de pagamento</label>
+        <select id="ct_forma">
+          <option value="BOLETO">Boleto</option>
+          <option value="PIX">Pix</option>
+          <option value="CREDIT_CARD">Cartão de crédito</option>
+        </select></div>
+    </div>
+
+    <div id="ct_erro"></div>
+  </div>`, `<button class="btn btn-primary btn-bloco" id="ct_assinar" disabled>Assinar</button>`);
+  ligarMoldura();
+
+  async function recalcular() {
+    const btn = document.getElementById("ct_assinar");
+    const box = document.getElementById("resumo");
+    if (!escolha.gestao && !escolha.analise) {
+      box.innerHTML = `<div class="meta">Escolha ao menos um módulo.</div>`;
+      btn.disabled = true; return;
+    }
+    try {
+      const p = await api.precoPacote(escolha.gestao, escolha.analise);
+      box.innerHTML = `
+        ${p.gestao.nome ? `<div class="linha-item"><span class="meta">${esc(p.gestao.nome)}</span>
+          <div><b>${brl(p.gestao.valor)}</b></div></div>` : ""}
+        ${p.analise.nome ? `<div class="linha-item"><span class="meta">${esc(p.analise.nome)}</span>
+          <div><b>${brl(p.analise.valor)}</b></div></div>` : ""}
+        ${p.desconto > 0 ? `<div class="linha-item">
+          <span class="meta" style="color:var(--sd-success)">Desconto de ${p.desconto_pct}%
+            por levar os dois</span>
+          <div><b style="color:var(--sd-success)">− ${brl(p.desconto)}</b></div></div>` : ""}
+        <div class="linha-item"><span class="meta">Total mensal</span>
+          <div><b style="font-size:1.15rem">${brl(p.total)}</b></div></div>`;
+      btn.disabled = !fat;
+    } catch (e) {
+      box.innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+      btn.disabled = true;
+    }
+  }
+
+  raiz.querySelectorAll("[data-modulo]").forEach((sel) =>
+    sel.addEventListener("change", () => {
+      escolha[sel.dataset.modulo] = sel.value || null;
+      recalcular();
+    }));
+
+  document.getElementById("ct_assinar").addEventListener("click", async (ev) => {
+    const b = ev.currentTarget, box = document.getElementById("ct_erro");
+    box.innerHTML = ""; b.disabled = true; b.textContent = "Contratando…";
+    try {
+      const r = await api.assinar(escolha.gestao, escolha.analise,
+        document.getElementById("ct_forma").value);
+      raiz.innerHTML = moldura(`<div class="view">
+        <div class="view-head"><h2>Assinatura criada</h2></div>
+        <div class="card-item">
+          <div class="empty" style="text-align:left"><b>${esc(r.descricao)}</b>
+            ${brl(r.valor)} por mês. A cobrança foi enviada para o e-mail
+            financeiro cadastrado.</div>
+          <div class="meta" style="line-height:1.5">O acesso é liberado assim
+            que o pagamento for confirmado. Com Pix costuma ser em minutos;
+            com boleto, em até dois dias úteis.</div>
+          ${r.simulado ? `<div class="aviso-linha warn">Modo de demonstração.
+            O provedor de pagamento ainda não está configurado.</div>` : ""}
+        </div>
+        <button class="btn btn-bloco" onclick="eloIr('faturamento')">Ver faturas</button>
+      </div>`);
+      ligarMoldura();
+    } catch (e) {
+      box.innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+      b.disabled = false; b.textContent = "Assinar";
+    }
+  });
+
+  recalcular();
+}
+
+/* =====================================================================
+   DADOS FISCAIS E FATURAS
+   Necessário para emitir boleto e NFS-e. Fica separado do cadastro
+   normal porque quem usa o sistema quase nunca é quem recebe a nota.
+   ===================================================================== */
+const ROT_REGIME = {
+  simples_nacional: "Simples Nacional", lucro_presumido: "Lucro Presumido",
+  lucro_real: "Lucro Real", mei: "MEI", pessoa_fisica: "Pessoa física",
+};
+const ROT_FATURA = { pendente:"Em aberto", confirmada:"Confirmada", recebida:"Paga",
+  vencida:"Vencida", estornada:"Estornada", cancelada:"Cancelada" };
+const CHIP_FATURA = { pendente:"info", confirmada:"ok", recebida:"ok",
+  vencida:"bad", estornada:"warn", cancelada:"neutro" };
+
+const mascaraDoc = (d) => {
+  const n = soDigitos(d);
+  return n.length === 11
+    ? n.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")
+    : n.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+};
+
+// Dígito verificador de CNPJ. O de CPF já existe em cpfValido().
+function cnpjValido(entrada) {
+  const c = soDigitos(entrada);
+  if (c.length !== 14 || /^(\d)\1{13}$/.test(c)) return false;
+  for (const corte of [12, 13]) {
+    const pesos = corte === 12
+      ? [5,4,3,2,9,8,7,6,5,4,3,2]
+      : [6,5,4,3,2,9,8,7,6,5,4,3,2];
+    let soma = 0;
+    for (let i = 0; i < corte; i++) soma += +c[i] * pesos[i];
+    const resto = soma % 11;
+    if ((resto < 2 ? 0 : 11 - resto) !== +c[corte]) return false;
+  }
+  return true;
+}
+
+async function telaFaturamento() {
+  raiz.innerHTML = moldura(`<div class="view">
+    <div class="view-head"><h2>Faturamento</h2></div>${carregando()}</div>`);
+  ligarMoldura();
+
+  let d = null, faturas = [];
+  try { [d, faturas] = await Promise.all([
+    api.faturamento(), api.faturas().catch(() => [])]); }
+  catch (e) { toast(e.message); }
+
+  const pj = (d?.tipo_pessoa ?? (app.conta.tipo === "imobiliaria" ? "J" : "F")) === "J";
+  const val = (k, alt = "") => esc(d?.[k] ?? alt);
+
+  const historico = faturas.length ? `
+    <div class="secao"><span>Faturas</span></div>
+    ${faturas.map((f) => `
+      <div class="card-item">
+        <div class="card-row">
+          <div><h3>${brl(f.valor)}</h3>
+            <div class="meta">${esc(f.descricao || "Assinatura Elo IMOB")}</div>
+            <div class="meta">Vencimento ${f.vencimento ? dataBR(f.vencimento) : "—"}${
+              f.pago_em ? " · pago em " + dataBR(f.pago_em) : ""}</div></div>
+          <span class="chip ${CHIP_FATURA[f.status]} sem-margem">${ROT_FATURA[f.status]}</span>
+        </div>
+        ${(f.link_boleto || f.nota_fiscal_url) ? `<div class="acoes-par">
+          ${f.link_boleto ? `<a class="acao-min" target="_blank" rel="noopener"
+            href="${esc(f.link_boleto)}">Ver boleto</a>` : ""}
+          ${f.nota_fiscal_url ? `<a class="acao-min" target="_blank" rel="noopener"
+            href="${esc(f.nota_fiscal_url)}">Nota fiscal</a>` : ""}
+        </div>` : ""}
+      </div>`).join("")}` : "";
+
+  raiz.innerHTML = moldura(`<div class="view formulario">
+    <div class="view-head"><h2>Faturamento</h2>
+      <div class="meta">Dados usados para emitir o boleto e a nota fiscal.</div></div>
+
+    <div class="card-item">
+      <div class="campo"><label>Tipo</label>
+        <select id="ft_tipo">
+          <option value="J" ${pj ? "selected" : ""}>Pessoa jurídica (CNPJ)</option>
+          <option value="F" ${!pj ? "selected" : ""}>Pessoa física (CPF)</option>
+        </select></div>
+      <div class="campo"><label id="lb_doc">${pj ? "CNPJ" : "CPF"}</label>
+        <input id="ft_doc" inputmode="numeric" value="${d ? mascaraDoc(d.documento) : ""}"></div>
+      <div class="campo"><label id="lb_razao">${pj ? "Razão social" : "Nome completo"}</label>
+        <input id="ft_razao" value="${val("razao_social")}"></div>
+      <div class="campo" id="bl_fantasia" style="${pj ? "" : "display:none"}">
+        <label>Nome fantasia</label><input id="ft_fantasia" value="${val("nome_fantasia")}"></div>
+      <div class="campo"><label>Regime tributário</label>
+        <select id="ft_regime">
+          <option value="">Não informado</option>
+          ${Object.entries(ROT_REGIME).map(([k, n]) =>
+            `<option value="${k}" ${d?.regime === k ? "selected" : ""}>${n}</option>`).join("")}
+        </select></div>
+    </div>
+
+    <div class="secao"><span>Endereço</span></div>
+    <div class="card-item">
+      <div class="dupla">
+        <div class="campo"><label>CEP</label>
+          <input id="ft_cep" inputmode="numeric" value="${val("cep")}"></div>
+        <div class="campo"><label>Número</label>
+          <input id="ft_numero" value="${val("numero")}"></div>
+      </div>
+      <div class="campo"><label>Logradouro</label>
+        <input id="ft_logradouro" value="${val("logradouro")}"></div>
+      <div class="campo"><label>Complemento</label>
+        <input id="ft_complemento" value="${val("complemento")}"></div>
+      <div class="campo"><label>Bairro</label>
+        <input id="ft_bairro" value="${val("bairro")}"></div>
+      <div class="dupla">
+        <div class="campo"><label>Cidade</label>
+          <input id="ft_cidade" value="${val("cidade")}"></div>
+        <div class="campo"><label>UF</label>
+          <input id="ft_uf" maxlength="2" value="${val("uf")}"></div>
+      </div>
+      <input type="hidden" id="ft_ibge" value="${val("codigo_ibge")}">
+    </div>
+
+    <div class="secao"><span>Inscrições</span></div>
+    <div class="card-item">
+      <div class="dupla">
+        <div class="campo"><label>Inscrição municipal</label>
+          <input id="ft_im" value="${val("inscricao_municipal")}"></div>
+        <div class="campo"><label>Inscrição estadual</label>
+          <input id="ft_ie" value="${val("inscricao_estadual", "ISENTO")}"></div>
+      </div>
+      <div class="meta" style="line-height:1.5">Inscrição estadual é de ICMS,
+        para quem vende mercadoria. Imobiliária presta serviço e normalmente
+        é isenta. Pode deixar como está.</div>
+    </div>
+
+    <div class="secao"><span>Contato financeiro</span></div>
+    <div class="card-item">
+      <div class="campo"><label>E-mail para nota e boleto</label>
+        <input id="ft_email" inputmode="email" value="${val("email_financeiro")}"></div>
+      <div class="dupla">
+        <div class="campo"><label>Telefone</label>
+          <input id="ft_fone" inputmode="tel" value="${val("telefone_financeiro")}"></div>
+        <div class="campo"><label>Responsável</label>
+          <input id="ft_resp" value="${val("responsavel")}"></div>
+      </div>
+    </div>
+
+    <div id="ft_erro"></div>
+    ${historico}
+
+    <div class="secao"><span>Seus dados</span></div>
+    <div class="card-item">
+      <div class="meta" style="line-height:1.55">Baixe tudo o que está nesta
+        conta num arquivo só: imóveis, vistorias, laudos com o código de
+        autenticidade, contratos e fichas. Serve como cópia de segurança e
+        atende ao direito de portabilidade da LGPD.</div>
+      <button class="btn btn-bloco" id="ft_exportar" style="margin-top:10px">
+        Baixar meus dados</button>
+    </div>
+  </div>`, `<button class="btn btn-primary btn-bloco" id="ft_salvar">Salvar</button>`);
+  ligarMoldura();
+
+  const trocarTipo = () => {
+    const j = document.getElementById("ft_tipo").value === "J";
+    document.getElementById("lb_doc").textContent = j ? "CNPJ" : "CPF";
+    document.getElementById("lb_razao").textContent = j ? "Razão social" : "Nome completo";
+    document.getElementById("bl_fantasia").style.display = j ? "" : "none";
+  };
+  document.getElementById("ft_tipo").addEventListener("change", trocarTipo);
+
+  document.getElementById("ft_doc").addEventListener("blur", (e) => {
+    const n = soDigitos(e.target.value);
+    if (n.length === 11 || n.length === 14) e.target.value = mascaraDoc(n);
+  });
+
+  // O CEP preenche o endereço e, principalmente, o código IBGE, que é o
+  // que a prefeitura exige na NFS-e e o campo que ninguém digita à mão.
+  document.getElementById("ft_cep").addEventListener("blur", async (e) => {
+    if (soDigitos(e.target.value).length !== 8) return;
+    try {
+      const en = await buscarCep(e.target.value);
+      const por = (id, v) => { const el = document.getElementById(id); if (v && !el.value) el.value = v; };
+      por("ft_logradouro", en.logradouro); por("ft_bairro", en.bairro);
+      por("ft_cidade", en.cidade); por("ft_uf", en.uf);
+      if (en.ibge) document.getElementById("ft_ibge").value = en.ibge;
+    } catch (err) { toast(err.message); }
+  });
+
+  document.getElementById("ft_exportar")?.addEventListener("click", async (ev) => {
+    const b = ev.currentTarget;
+    b.disabled = true; b.textContent = "Preparando…";
+    try {
+      const dados = await api.exportar();
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `elo-imob-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      toast("Arquivo baixado");
+    } catch (e) { toast(e.message); }
+    finally { b.disabled = false; b.textContent = "Baixar meus dados"; }
+  });
+
+  document.getElementById("ft_salvar").addEventListener("click", async (ev) => {
+    const b = ev.currentTarget, box = document.getElementById("ft_erro");
+    const v = (id) => document.getElementById(id).value.trim();
+    box.innerHTML = "";
+
+    const tipo = v("ft_tipo") || document.getElementById("ft_tipo").value;
+    const doc = soDigitos(v("ft_doc"));
+    const ok = tipo === "J" ? cnpjValido(doc) : cpfValido(doc);
+    if (!ok) {
+      box.innerHTML = `<div class="erro">${tipo === "J" ? "CNPJ" : "CPF"} inválido.
+        Confira os números.</div>`; return;
+    }
+    for (const [id, nome] of [["ft_razao","razão social"],["ft_cep","CEP"],
+        ["ft_logradouro","logradouro"],["ft_numero","número"],["ft_bairro","bairro"],
+        ["ft_cidade","cidade"],["ft_uf","UF"],["ft_email","e-mail financeiro"]]) {
+      if (!v(id)) { box.innerHTML = `<div class="erro">Informe o ${nome}.</div>`; return; }
+    }
+
+    b.disabled = true; b.textContent = "Salvando…";
+    try {
+      await api.salvarFaturamento({
+        tipo_pessoa: document.getElementById("ft_tipo").value,
+        documento: doc, razao_social: v("ft_razao"),
+        nome_fantasia: v("ft_fantasia") || null,
+        regime: v("ft_regime") || null,
+        inscricao_municipal: v("ft_im") || null,
+        inscricao_estadual: v("ft_ie") || null,
+        cep: soDigitos(v("ft_cep")), logradouro: v("ft_logradouro"),
+        numero: v("ft_numero"), complemento: v("ft_complemento") || null,
+        bairro: v("ft_bairro"), cidade: v("ft_cidade"), uf: v("ft_uf").toUpperCase(),
+        codigo_ibge: v("ft_ibge") || null,
+        email_financeiro: v("ft_email"),
+        telefone_financeiro: v("ft_fone") || null,
+        responsavel: v("ft_resp") || null,
+      });
+      toast("Dados salvos");
+      telaFaturamento();
+    } catch (e) {
+      box.innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+      b.disabled = false; b.textContent = "Salvar";
+    }
+  });
+}
+
+/* =====================================================================
+   EQUIPE
+   Convidar consome vaga paga e dá acesso à base de imóveis. Por isso
+   fica com titular e gestor, nunca com corretor.
+   ===================================================================== */
+const CHIP_MEMBRO = { titular:"info", gestor:"info", corretor:"ok", vistoriador:"warn" };
+
+const DESC_PAPEL = {
+  gestor: "Publica, exclui e gerencia a equipe.",
+  corretor: "Cadastra imóveis, faz vistorias e fichas. Não exclui.",
+  vistoriador: "Só as vistorias atribuídas a ele. Não vê contratos nem fichas.",
+};
+
+async function telaEquipe() {
+  raiz.innerHTML = moldura(`<div class="view">
+    <div class="view-head"><h2>Equipe</h2><div class="meta">Carregando…</div></div>
+    ${carregando()}</div>`);
+  ligarMoldura();
+
+  let pessoas = [], pendentes = [], vagas = {};
+  try {
+    [pessoas, pendentes, vagas] = await Promise.all([
+      api.equipe(),
+      api.convites().catch(() => []),
+      api.vagas().catch(() => ({})),
+    ]);
+  } catch (e) { toast(e.message); }
+
+  const podeGerir = ["titular", "gestor"].includes(app.conta.papel);
+  const cUsados = vagas.corretores_usados ?? 0, cLimite = vagas.corretores_limite ?? 1;
+  const vUsados = vagas.vistoriadores_usados ?? 0, vLimite = vagas.vistoriadores_limite ?? 3;
+
+  const lista = pessoas.map((p) => `
+    <div class="card-item">
+      <div class="card-row">
+        <div>
+          <h3>${esc(p.nome)}${p.sou_eu ? " · você" : ""}</h3>
+          <div class="meta">${esc(p.email)}</div>
+          <div class="meta">${p.ultimo_acesso
+            ? "Último acesso em " + dataHoraBR(p.ultimo_acesso) : "Nunca entrou"}</div>
+        </div>
+        <span class="chip ${CHIP_MEMBRO[p.papel]} sem-margem">${ROT_MEMBRO[p.papel]}</span>
+      </div>
+      ${podeGerir && !p.sou_eu && p.papel !== "titular" ? `
+      <div class="acoes-par">
+        <select class="acao-min" data-papel="${p.usuario_id}">
+          ${["gestor","corretor","vistoriador"].map((k) =>
+            `<option value="${k}" ${k === p.papel ? "selected" : ""}>${ROT_MEMBRO[k]}</option>`).join("")}
+        </select>
+        <button class="acao-min" data-desativa="${p.usuario_id}">${
+          p.ativo ? "Desativar" : "Reativar"}</button>
+      </div>` : ""}
+    </div>`).join("");
+
+  const convites = pendentes.length ? `
+    <div class="secao"><span>Convites pendentes</span></div>
+    ${pendentes.map((c) => {
+      const link = `${location.origin}${location.pathname}#convite=${c.token}`;
+      return `<div class="card-item">
+        <div class="card-row">
+          <div><h3>${esc(c.nome)}</h3>
+            <div class="meta">${esc(c.email || c.telefone || "")} · expira em ${dataBR(c.expira_em.slice(0,10))}</div></div>
+          <span class="chip ${CHIP_MEMBRO[c.papel]} sem-margem">${ROT_MEMBRO[c.papel]}</span>
+        </div>
+        <div class="acoes-par">
+          ${c.telefone ? `<a class="acao-min" target="_blank" rel="noopener"
+            href="https://wa.me/55${esc(c.telefone)}?text=${encodeURIComponent(
+              `Olá ${c.nome}! Você foi convidado para a equipe no Elo IMOB. Acesse: ${link}`)}">WhatsApp</a>`
+            : `<button class="acao-min" data-copia="${esc(link)}">Copiar link</button>`}
+          <button class="acao-min" data-cancela="${c.id}">Cancelar</button>
+        </div>
+      </div>`;
+    }).join("")}` : "";
+
+  const formulario = podeGerir ? `
+    <div class="secao"><span>Convidar</span></div>
+    <div class="card-item">
+      <div class="campo"><label>Nome</label><input id="cv_nome" autocomplete="off"></div>
+      <div class="campo"><label>Função</label>
+        <select id="cv_papel">
+          <option value="corretor">Corretor</option>
+          <option value="gestor">Gestor</option>
+          <option value="vistoriador">Vistoriador</option>
+        </select>
+        <div class="meta" id="cv_desc" style="margin-top:6px">${DESC_PAPEL.corretor}</div></div>
+      <div class="campo"><label>WhatsApp</label>
+        <input id="cv_tel" inputmode="tel" placeholder="21 99999-9999"></div>
+      <div id="cv_erro"></div>
+      <button class="btn btn-primary btn-bloco" id="cv_enviar">Gerar convite</button>
+      <div class="meta" style="margin-top:8px;line-height:1.5">
+        O convite vira um link. Mande no WhatsApp: a pessoa abre, se cadastra
+        e já entra na sua equipe.</div>
+    </div>` : "";
+
+  raiz.innerHTML = moldura(`<div class="view">
+    <div class="view-head"><h2>Equipe</h2>
+      <div class="meta">${cUsados} de ${cLimite} corretor(es) · ${
+        vUsados} de ${vLimite} vistoriador(es)</div>
+      ${vagas.sem_plano ? `<div class="aviso-linha warn">Sem plano de Gestão ativo.
+        Os limites são os mínimos até a contratação.</div>` : ""}</div>
+    ${lista}${convites}${formulario}
+  </div>`);
+  ligarMoldura();
+
+  document.getElementById("cv_papel")?.addEventListener("change", (e) => {
+    document.getElementById("cv_desc").textContent = DESC_PAPEL[e.target.value] || "";
+  });
+
+  raiz.querySelectorAll("[data-copia]").forEach((b) =>
+    b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copia); toast("Link copiado"); }
+      catch { toast(b.dataset.copia); }
+    }));
+
+  raiz.querySelectorAll("[data-cancela]").forEach((b) =>
+    b.addEventListener("click", async () => {
+      try { await api.cancelarConvite(b.dataset.cancela); telaEquipe(); }
+      catch (e) { toast(e.message); }
+    }));
+
+  raiz.querySelectorAll("[data-papel]").forEach((sel) =>
+    sel.addEventListener("change", async () => {
+      try { await api.alterarMembro(sel.dataset.papel, sel.value, null); toast("Função alterada"); }
+      catch (e) { toast(e.message); telaEquipe(); }
+    }));
+
+  raiz.querySelectorAll("[data-desativa]").forEach((b) =>
+    b.addEventListener("click", async () => {
+      const alvo = pessoas.find((p) => p.usuario_id === b.dataset.desativa);
+      try { await api.alterarMembro(b.dataset.desativa, null, !alvo.ativo); telaEquipe(); }
+      catch (e) { toast(e.message); }
+    }));
+
+  document.getElementById("cv_enviar")?.addEventListener("click", async (ev) => {
+    const b = ev.currentTarget, box = document.getElementById("cv_erro");
+    const nome = document.getElementById("cv_nome").value.trim();
+    const tel = document.getElementById("cv_tel").value.trim();
+    box.innerHTML = "";
+    if (nome.length < 3) { box.innerHTML = `<div class="erro">Informe o nome.</div>`; return; }
+    if (soDigitos(tel).length < 10) {
+      box.innerHTML = `<div class="erro">Informe um WhatsApp com DDD.</div>`; return;
+    }
+    b.disabled = true; b.textContent = "Gerando…";
+    try {
+      await api.convidar(document.getElementById("cv_papel").value, nome, null, tel);
+      telaEquipe();
+    } catch (e) {
+      box.innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+      b.disabled = false; b.textContent = "Gerar convite";
+    }
+  });
+}
+
+/* =====================================================================
+   PÁGINA PÚBLICA — aceitar convite
+   Serve para quem já tem login e para quem ainda não tem.
+   ===================================================================== */
+async function paginaConvite(token) {
+  raiz.innerHTML = `<div class="app"><div class="conteudo">${carregando("Abrindo convite…")}</div></div>`;
+
+  let d;
+  try { d = await api.abrirConvite(token); } catch (e) { /* trata abaixo */ }
+
+  const aviso = (titulo, texto) => {
+    raiz.innerHTML = `<div class="app"><div class="conteudo"><div class="view">
+      <div class="card-item"><div class="empty"><b>${esc(titulo)}</b>${esc(texto)}</div></div>
+    </div></div></div>`;
+  };
+
+  if (!d) return aviso("Convite não encontrado", "Peça um novo link para a imobiliária.");
+  if (d.cancelado) return aviso("Convite cancelado", "Fale com quem te convidou.");
+  if (d.aceito)   return aviso("Convite já usado", "Entre normalmente com seu e-mail e senha.");
+  if (d.expirado) return aviso("Convite expirado", "Peça um novo link para a imobiliária.");
+
+  const logado = !!app.sessao;
+
+  raiz.innerHTML = `<div class="app"><div class="conteudo"><div class="view">
+    <div class="pag-cabecalho">
+      <img src="logoelo.png" alt="Elo" onerror="this.remove()">
+      <div><div class="t">Convite para equipe</div><div class="s">${esc(d.conta)}</div></div>
+    </div>
+    <div class="view-head"><h2>Olá, ${esc(d.nome.split(" ")[0])}</h2>
+      <div class="meta">${esc(d.conta)} convidou você para entrar como
+        <b>${ROT_MEMBRO[d.papel]}</b>.</div></div>
+
+    <div class="card-item">
+      <div class="meta" style="line-height:1.55">${esc(DESC_PAPEL[d.papel] || "")}</div>
+    </div>
+
+    <div id="cvErro"></div>
+
+    ${logado
+      ? `<button class="btn btn-primary btn-bloco" id="aceitar">Entrar na equipe</button>
+         <div class="meta" style="margin-top:8px">Você já está logado.</div>`
+      : `<a class="btn btn-primary btn-bloco"
+            href="${location.pathname}#cadastro=${esc(token)}">Criar meu acesso</a>
+         <div class="meta" style="margin-top:10px;line-height:1.5">
+           Já tem conta no Elo IMOB? Entre primeiro e depois abra este link de novo.</div>`}
+  </div></div></div>`;
+
+  document.getElementById("aceitar")?.addEventListener("click", async (ev) => {
+    const b = ev.currentTarget;
+    b.disabled = true; b.textContent = "Entrando…";
+    try {
+      await api.aceitarConvite(token);
+      location.hash = "";
+      location.reload();
+    } catch (e) {
+      document.getElementById("cvErro").innerHTML = `<div class="erro">${esc(e.message)}</div>`;
+      b.disabled = false; b.textContent = "Entrar na equipe";
+    }
+  });
+}
+
+/* Tela de contratação do módulo. Não é bloqueio seco: mostra o que a
+   pessoa ganha e quanto custa, com o preço vindo da tabela. */
+async function telaModuloBloqueado(modulo) {
+  raiz.innerHTML = moldura(`<div class="view">
+    <div class="view-head"><h2>Análise de crédito</h2></div>${carregando()}</div>`);
+  ligarMoldura();
+
+  let planos = [];
+  try {
+    planos = (await api.planosComerciais().catch(() => []))
+      .filter((p) => p.modulo_id === modulo && p.ativo
+        && p.publico === (app.conta.tipo === "imobiliaria" ? "imobiliaria" : "autonomo"));
+  } catch (e) { /* mostra sem preço */ }
+
+  const p = planos[0];
+
+  raiz.innerHTML = moldura(`<div class="view">
+    <div class="view-head"><h2>Análise de crédito</h2>
+      <div class="meta">Módulo não contratado nesta conta.</div></div>
+
+    <div class="card-item">
+      <div class="empty" style="text-align:left">
+        <b>Decida a locação em segundos</b>
+        O candidato assina a autorização pelo WhatsApp e o sistema consulta
+        Receita, score, renda estimada, dívidas e processos. No fim sai um
+        parecer com a decisão e a justificativa, não dez páginas de dados.</div>
+      ${p ? `<div class="linha-item"><span class="meta">${esc(p.nome)}</span>
+        <div><b>${brl(p.preco_mensal)}/mês</b></div></div>
+        <div class="linha-item"><span class="meta">Fichas inclusas</span>
+          <div><b>${p.fichas_inclusas} por mês</b></div></div>
+        <div class="linha-item"><span class="meta">Ficha adicional</span>
+          <div><b>${brl(p.preco_ficha_extra)}</b></div></div>` : ""}
+    </div>
+
+    <div class="card-item">
+      <div class="meta" style="line-height:1.55">A liberação é automática assim
+        que o pagamento for confirmado.</div>
+      <button class="btn btn-primary btn-bloco" onclick="eloIr('assinatura')"
+        style="margin-top:10px">Contratar agora</button>
+    </div>
+  </div>`);
+  ligarMoldura();
+}
+
 async function telaFichas() {
+  // Porta de entrada do módulo. A trava de verdade está no banco: sem o
+  // módulo, registrar_consulta recusa mesmo se alguém chamar direto.
+  if (app.modulos && !app.modulos.analise) return telaModuloBloqueado("analise");
+
   raiz.innerHTML = moldura(`<div class="view">
     <div class="view-head"><h2>Fichas</h2><div class="meta">Carregando…</div></div>${carregando()}</div>`);
   ligarMoldura();
@@ -3298,8 +4880,10 @@ async function telaNovaFicha() {
           <option value="seguro_fianca">Seguro-fiança</option>
           <option value="titulo_capitalizacao">Título de capitalização</option>
         </select></div>
-      ${imoveis.length ? `<div class="campo"><label>Imóvel (opcional)</label>
-        <select id="fi_imovel"><option value="">Nenhum</option>
+      ${!imoveis.length ? `<div class="aviso-linha warn">Cadastre um imóvel antes
+        de abrir uma ficha. A análise compara a renda com o aluguel dele.</div>` : ""}
+      ${imoveis.length ? `<div class="campo"><label>Imóvel da locação</label>
+        <select id="fi_imovel"><option value="">Selecione…</option>
           ${imoveis.map((i) => `<option value="${i.id}" data-aluguel="${i.valor_aluguel || ""}">
             ${esc(i.codigo || "—")} — ${esc(i.bairro || i.cidade || "")}</option>`).join("")}
         </select></div>` : ""}
@@ -3328,6 +4912,12 @@ async function telaNovaFicha() {
     if (!cpfValido(v("fi_cpf"))) { box.innerHTML = `<div class="erro">CPF inválido. Confira os números.</div>`; return; }
     const aluguel = parseFloat(v("fi_aluguel").replace(/\./g, "").replace(",", "."));
     if (!(aluguel > 0)) { box.innerHTML = `<div class="erro">Informe o valor do aluguel.</div>`; return; }
+    // A ficha compara a renda contra o aluguel deste imóvel. Sem ele, o
+    // parecer fica sem contexto e não dá para justificar a decisão depois.
+    if (!document.getElementById("fi_imovel")?.value) {
+      box.innerHTML = `<div class="erro">Selecione o imóvel da locação.
+        Cadastre o imóvel antes, se ainda não existir.</div>`; return;
+    }
 
     b.disabled = true; b.textContent = "Criando…";
     try {
@@ -3460,10 +5050,13 @@ async function telaFicha() {
         esc(f.imovel.bairro || "")}</div>` : ""}
       <span class="chip ${CHIP_FICHA[f.status]}">${ROT_FICHA[f.status]}</span></div>
     ${aviso}${acao}${erro}${alertaIdentidade(f)}${blocoParecer(p)}${blocoDecisao(f)}${
-      relatorioCompleto(f.consulta_bruta?.secoes)}${trilhaCamadas(f)}${recalc}
+      resumoFicha(f.consulta_bruta?.secoes, f.id)}${trilhaCamadas(f)}${recalc}
+    <div class="so-impressao">${relatorioCompleto(f.consulta_bruta?.secoes)}</div>
     ${p ? rodapeFicha(f) : ""}
   </div>`, p ? `<button class="btn btn-primary" style="flex:1" id="btnPdfFicha">PDF</button>
-     <button class="btn btn-ghost" id="btnLinkFicha">Link</button>` : "");
+     <button class="btn btn-ghost" id="btnLinkFicha">Link</button>
+     <button class="btn btn-ghost" id="btnExcluirFicha">Excluir</button>`
+   : `<button class="btn btn-ghost btn-bloco" id="btnExcluirFicha">Excluir ficha</button>`);
   ligarMoldura();
 
   // O navegador não imprime o conteúdo de um <details> fechado. Abro todos
@@ -3475,6 +5068,13 @@ async function telaFicha() {
     secs.forEach((s) => { s.open = true; });
     window.print();
     setTimeout(() => secs.forEach((s, i) => { s.open = antes[i]; }), 500);
+  });
+
+  document.getElementById("btnExcluirFicha")?.addEventListener("click", async (ev) => {
+    if (!confirm("Excluir esta ficha e o parecer? A ação não pode ser desfeita.")) return;
+    const b = ev.currentTarget; b.disabled = true; b.textContent = "…";
+    try { await api.excluirFicha(id); toast("Ficha excluída"); ir("fichas"); }
+    catch (e) { toast(e.message); b.disabled = false; b.textContent = "Excluir"; }
   });
 
   document.getElementById("btnLinkFicha")?.addEventListener("click", async () => {
@@ -4184,7 +5784,13 @@ async function paginaLeituraContrato(token) {
 function ligarMoldura() {
   document.getElementById("abreGaveta")?.addEventListener("click", () => { app.gaveta = true; render(); });
   document.getElementById("fechaGaveta")?.addEventListener("click", () => { app.gaveta = false; render(); });
-  document.getElementById("sair")?.addEventListener("click", () => sb.auth.signOut());
+  document.getElementById("sair")?.addEventListener("click", () => {
+    // Sem isto, o visual de administrador ficaria preso se outra pessoa
+    // entrasse na mesma aba depois da saída.
+    app.admin = false;
+    marcarModoAdmin(false);
+    sb.auth.signOut();
+  });
   document.getElementById("trocaTema")?.addEventListener("click", () => {
     const atual = document.documentElement.dataset.tema;
     document.documentElement.dataset.tema = atual === "claro" ? "escuro" : "claro";
@@ -4220,6 +5826,12 @@ function ligarAuth() {
             nome_conta: app.tipoEscolhido === "imobiliaria" ? (v("f_nomeConta") || nome) : nome,
             telefone: v("f_telefone") || null,
             creci: v("f_creci") || null,
+            // Com convite, o trigger coloca a pessoa na conta de quem
+            // convidou. Sem convite, ela ganha a própria conta.
+            convite: app.convite || null,
+            // A escolha feita na vitrine viaja até depois do login, para
+            // a pessoa cair direto na contratação em vez de recomeçar.
+            planos: app.planosEscolhidos?.join(",") || null,
           } },
         });
         if (error) throw new Error(traduzErro(error.message));
@@ -4244,12 +5856,22 @@ async function render() {
   const tokenContrato = rota.get("contrato");
   const tokenFicha = rota.get("ficha");
   const tokenParecer = rota.get("parecer");
+  const tokenConvite = rota.get("convite");
+  const verPlanos = rota.has("planos");
+  const planoEscolhido = rota.get("cadastro-plano");
+  // Guarda a escolha da vitrine para o cadastro já saber o que contratar.
+  if (planoEscolhido) app.planosEscolhidos = planoEscolhido.split(",").filter(Boolean);
+  const tokenCadastro = rota.get("cadastro");
+  // Guardado no estado para o formulário de cadastro enviar junto.
+  if (tokenCadastro) app.convite = tokenCadastro;
   if (tokenAssinatura) return paginaAssinatura(tokenAssinatura);
   if (tokenVerificacao) return paginaVerificacao(tokenVerificacao);
   if (tokenLaudo) return paginaLeituraLaudo(tokenLaudo);
   if (tokenContrato) return paginaLeituraContrato(tokenContrato);
   if (tokenFicha) return paginaFicha(tokenFicha);
   if (tokenParecer) return paginaParecer(tokenParecer);
+  if (tokenConvite) return paginaConvite(tokenConvite);
+  if (verPlanos) return paginaPlanos();
 
   if (!app.sessao) { raiz.innerHTML = `<div class="app"><div class="auth-wrap">${telaAuth()}</div></div>`; ligarAuth(); return; }
   if (!app.conta) { raiz.innerHTML = carregando("Preparando sua conta…"); return; }
@@ -4258,13 +5880,30 @@ async function render() {
   if (app.tela === "novoContrato") return telaNovoContrato();
   if (app.tela === "vistoria") return telaVistoria();
   if (app.tela === "laudo") return telaLaudo();
+  // Documento legal pendente bloqueia o app inteiro. Fica aqui, antes
+  // de qualquer tela, para não haver rota que escape do aceite.
+  if (app.pendentesLegais?.length) return telaAceite(app.pendentesLegais);
+
   if (app.tela === "novoImovel") return telaNovoImovel();
   if (app.tela === "ficha") return telaFicha();
   if (app.tela === "novaFicha") return telaNovaFicha();
+  if (app.tela === "relatorioFicha") return telaRelatorioFicha();
   if (app.aba === "imoveis") return telaImoveis();
   if (app.aba === "laudos") return telaLaudos();
   if (app.aba === "contratos") return telaContratos();
   if (app.aba === "fichas") return telaFichas();
+  if (app.aba === "equipe") return telaEquipe();
+  if (app.aba === "faturamento") return telaFaturamento();
+  if (app.aba === "assinatura") return telaContratar();
+  // Quem chegou pela vitrine e acabou de entrar vai direto contratar.
+  if (app.planosEscolhidos?.length && app.conta && !app.tela) {
+    const escolhidos = app.planosEscolhidos;
+    app.planosEscolhidos = null;
+    app.aba = "assinatura";
+    return telaContratar(escolhidos);
+  }
+  if (app.aba === "erros" && app.admin) return telaErros();
+  if (app.aba === "valores" && app.admin) return telaValores();
   if (app.aba === "admin" && app.admin) return telaAdmin();
   return telaInicio();
 }
@@ -4272,7 +5911,14 @@ async function render() {
 /* =====================================================================
    8. INÍCIO
    ===================================================================== */
-const rotaPublica = /(?:^|#|&)(assinar|verificar|laudo|contrato|ficha|parecer)=/.test(location.hash);
+/* Liga ou desliga o visual de administrador. Fica num lugar só para
+   não existir tela em que a flag esteja ativa sem o aviso aparecer. */
+function marcarModoAdmin(ligado) {
+  if (ligado) document.documentElement.dataset.modo = "admin";
+  else delete document.documentElement.dataset.modo;
+}
+
+const rotaPublica = /(?:^|#|&)(assinar|verificar|laudo|contrato|ficha|parecer|convite|planos|cadastro-plano)=?/.test(location.hash);
 
 if (rotaPublica) {
   render();                                  // link público: nem consulta sessão
@@ -4290,6 +5936,10 @@ if (rotaPublica) {
       if (!app.conta) toast("Conta não encontrada. Recarregue a página.");
       if (app.conta) {
         app.admin = await api.souAdmin();
+        marcarModoAdmin(app.admin);
+        app.modulos = Object.fromEntries(
+          (await api.meusModulos().catch(() => [])).map((m) => [m.modulo_id, m.ativo]));
+        app.pendentesLegais = await api.pendentesLegais().catch(() => []);
         try { app.vigencia = await api.minhaVigencia(); } catch { app.vigencia = null; }
       }
       render();
@@ -4302,6 +5952,10 @@ if (rotaPublica) {
     try { app.conta = await api.minhaConta(); } catch (e) { toast(e.message); }
     if (app.conta) {
       app.admin = await api.souAdmin();
+      marcarModoAdmin(app.admin);
+      app.modulos = Object.fromEntries(
+        (await api.meusModulos().catch(() => [])).map((m) => [m.modulo_id, m.ativo]));
+      app.pendentesLegais = await api.pendentesLegais().catch(() => []);
       try { app.vigencia = await api.minhaVigencia(); } catch { app.vigencia = null; }
     }
   }
